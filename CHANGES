@@ -1,0 +1,19 @@
+Version 0.6.1
+  * Implemented optional PEP8 index that checks code style conformance to PEP8.
+    It can be enabled by --with-pep8 command-line option.
+  * If pylint runs longer than two minutes, it will be automatically terminated.
+    This time can be configured with --pylint-max-execution-time option.
+  * Fixed bug in PyPI download index that may cause installability to be > 100%.
+
+Version 0.6
+
+  * Recognition of three docstring formatting syntaxes: ReST, epytext and
+    javadoc.
+  * Ability to score egg packages.
+  * Implementation of --static and --lite command line switches for running
+    different subsets of indices.
+  * Speeded up pylint execution.
+  * Cheesecake recognizes usage of unit test frameworks.
+  * Added lots of missing unit and functional tests.
+  * Major refactoring of Cheesecake class and indices classes.
+  * Implemented --keep-log option.

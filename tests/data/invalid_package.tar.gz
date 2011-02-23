@@ -1,0 +1,67 @@
+"""
+Docstring for module1
+"""
+
+class Class1:
+    """
+    Docstring for Class1
+    """
+
+    def __init__(self):
+        """
+        Methods starting with __ should be skipped
+        """
+        pass
+
+    def __another_method__(self):
+        """Should also be skipped"""
+        pass
+
+    def method1(self):
+        """Docstring for method1"""
+        pass
+
+    def method2(self):
+        "Docstring for method2"
+        pass
+
+    def method3(self):
+        """
+        Docstring for method3
+        """
+        pass
+
+    def method4(self):
+        # No docstring
+        pass
+
+class Class2:
+
+    """
+    Docstring one line apart from Class2
+    """
+    pass
+
+def func1():
+    """Docstring for func1"""
+    return
+
+def func2():
+    "Docstring for func2"
+    return
+
+def func3():
+    """
+    Docstring for func3
+    """
+    return
+
+def func4():
+    # No docstring
+    return
+
+def __func5__(self):
+    """
+    Functions starting with __ are not skipped
+    """
+    return

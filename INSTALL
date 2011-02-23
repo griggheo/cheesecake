@@ -1,0 +1,49 @@
+Cheesecake can be installed in two ways: either via downloading a
+Cheesecake package and installing it yourself, or using easy_install.
+
+============
+Requirements
+============
+
+To make Cheesecake score maximally reliable make sure you have
+both `pylint <http://www.logilab.org/projects/pylint>`_ and
+`setuptools <http://peak.telecommunity.com/DevCenter/setuptools>`_
+installed.
+
+===================
+Manual installation
+===================
+
+If you have downloaded a Cheesecake package, follow this steps:
+
+1) Unpack it::
+
+    tar zxf cheesecake-0.6.tar.gz
+
+2) Change to the cheesecake directory::
+
+    cd cheesecake-0.6/
+
+3) Run setup.py that will install Cheesecake automatically. This step
+   need to be run as root::
+
+    python setup.py install
+
+==================
+Using easy_install
+==================
+
+If you have `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_
+on your system, installing Cheesecake is as simple as running::
+
+    easy_install cheesecake
+
+Note: if you already have an old version of Cheesecake installed, easy_install
+will not automatically download the latest version. You can ask for a particular
+version by running for example::
+
+    easy_install Cheesecake==0.6
+
+If you're feeling adventurous you may install development version::
+
+    easy_install Cheesecake==dev
