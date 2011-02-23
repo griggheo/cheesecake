@@ -101,42 +101,6 @@ Requirements
 * `setuptools <http://peak.telecommunity.com/DevCenter/setuptools>`_ is
   required for the installability index computation
 
-Obtaining the source code
--------------------------
-
-You can get the source code via svn::
-
-  svn co http://svn.pycheesecake.org/trunk cheesecake
-
-*Note*: make sure you indicate the target directory when you do the svn checkout,
-otherwise the cheesecake package files will be checked out directly in your
-current directory.
-
-You may want to modify your subversion client configuration to automatically
-expand tags, like $Id$, $Author$ etc. To do so add following two lines to your
-``/.subversion/config``::
-
-  enable-auto-props = yes
-
-in [miscellany] section, and::
-
-  *.py = svn:eol-style=native;svn:keywords=Author Date Id Revision
-
-in [auto-props] section.
-
-Documentation
--------------
-
-The most recent code documentation should be always available
-at http://agilistas.org/cheesecake/mk/docs/. You can also generate
-this documentation directly from the Cheesecake sources. Run this command
-from the main source directory::
-
-  sh support/generate_docs.sh .
-
-:Note: Generating documentation requires `epydoc <http://epydoc.sourceforge.net/>`_
-       tool installed.
-
 Unit tests
 ----------
 
@@ -161,12 +125,6 @@ If you happen to find any of our tests failing, please don't hesitate to contact
 us, either via
 `cheesecake-devel mailing list <http://lists2.idyll.org/listinfo/cheesecake-dev>`_
 or via `Cheesecake Trac <http://pycheesecake.org/>`_.
-
-Buildbot
---------
-
-A buildbot is happily running svn updates and unit tests. Check it out
-`here <http://agilistas.org:8888/>`_.
 
 Mailing lists
 -------------
@@ -314,5 +272,3 @@ index measurement, followed by other metrics inspired from the
 Please edit the `IndexMeasurementIdeas <http://pycheesecake.org/wiki/IndexMeasurementIdeas>`_
 Wiki page to add things that you would like to see covered 
 by the Cheesecake metrics.
-
-.. footer:: Last modified: 31 Jan 2007 by `Michal Kwiatkowski <http://joker.linuxstuff.pl>`_.
