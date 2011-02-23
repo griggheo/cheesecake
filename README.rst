@@ -174,11 +174,11 @@ and corresponding values for each leaf are presented below:
   * unpacked package directory is the same as package name: 15
   * package has setup.py: 25
   * package can be installed to given directory via "setup.py install": 50
-  * package contain generated files, like .pyc: -20
+  * package contains generated files, like .pyc: -20
 
 * Documentation
 
-  * package contain files listed below
+  * package contains files listed below
 
     * README: 30
     * LICENCE/COPYING: 30 [#oneof]_
@@ -190,7 +190,7 @@ and corresponding values for each leaf are presented below:
     * THANKS: 10
     * TODO: 10
 
-  * package contain directories listed below
+  * package contains directories listed below
 
     * doc/docs: 30 [#oneof]_
     * test/tests: 30 [#oneof]_
