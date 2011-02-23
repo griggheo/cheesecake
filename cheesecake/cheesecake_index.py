@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Cheesecake: How tasty is your code?
 
-The idea of the Cheesecake project is to rank Python packages based on various 
+The idea of the Cheesecake project is to rank Python packages based on various
 empirical "kwalitee" factors, such as:
 
  * whether the package can be downloaded from PyPI given its name
@@ -1055,7 +1055,6 @@ class IndexPyLint(Index):
         'W0403', # relative import
         'W0406', # importing of self
     ]
-    pylint_args = ' '.join(map(lambda x: '--disable-msg=%s' % x, disabled_messages))
 
     def compute(self, files_list, package_dir, pylint_max_execution_time):
         # See if pylint script location is set via environment variable
@@ -1084,12 +1083,12 @@ class IndexPyLint(Index):
         count = 0
         error_count = 0
 
-        for filenames in generate_arguments(files_to_lint, max_arguments_length - len(self.pylint_args)):
+        for filenames in generate_arguments(files_to_lint, max_arguments_length - len(self._pylint_args())):
             filenames =  ' '.join(filenames)
             self.cheesecake.log.debug("Running pylint on files: %s." % filenames)
 
             # Run pylint, but don't allow it to work longer than one minute.
-            rc, output = run_cmd("%s %s --persistent=n %s" % (pylint_location, filenames, self.pylint_args),
+            rc, output = run_cmd("%s %s --persistent=n %s" % (pylint_location, filenames, self._pylint_args()),
                                  max_timeout=pylint_max_execution_time)
             if rc:
                 if output == 'Time exceeded':
@@ -1136,6 +1135,21 @@ class IndexPyLint(Index):
             return False
 
         return not cheesecake.lite
+
+    @classmethod
+    def _pylint_args(cls):
+        try:
+            import pylint.__pkginfo__
+            version = map(int, pylint.__pkginfo__.version.split('.'))
+            if version > (0, 21):
+                disable_option = "disable-msg"
+            else:
+                disable_option = "disable"
+            return ' '.join(map(lambda x: '--%s=%s' % (disable_option, x),
+                    cls.disabled_messages))
+        except ImportError:
+            # pylint is not installed
+            return ""
 
 class IndexPEP8(Index):
     """Compute PEP8 index for the modules in the package.
@@ -1282,7 +1296,7 @@ class Cheesecake(object):
         * existence of certain files such as README, INSTALL, LICENSE, setup.py etc.
         * existence of certain directories such as doc, test, demo, examples
         * percentage of modules/functions/classes/methods with docstrings
-        * percentage of functions/methods that are unit tested 
+        * percentage of functions/methods that are unit tested
         * average pylint score for all non-test and non-demo modules
     """
 
