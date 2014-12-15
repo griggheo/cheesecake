@@ -1101,8 +1101,8 @@ class IndexPyLint(Index):
                 error_count += 1
             else:
                 # Extract score from pylint output.
-                score_line = output.split("\n")[-3]
-                s = re.search(r" (-?\d+\.\d+)/10", score_line)
+                s = re.search(r"Your code has been rated at (-?\d+\.\d+)/10",
+                              output)
                 if s:
                     pylint_score += float(s.group(1))
                     count += 1
