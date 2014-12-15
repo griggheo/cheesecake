@@ -25,7 +25,8 @@ from math import ceil
 
 import logger
 
-from util import pad_with_dots, pad_left_spaces, pad_right_spaces, pad_msg, pad_line
+from util import (pad_with_dots, pad_left_spaces, pad_right_spaces, pad_msg,
+                  pad_line)
 from util import run_cmd, command_successful
 from util import unzip_package, untar_package, unegg_package
 from util import mkdirs
@@ -43,9 +44,9 @@ __docformat__ = 'reStructuredText en'
 __revision__ = '$Revision: 192 $'[11:-1].strip()
 
 
-################################################################################
+###############################################################################
 ## Helpers.
-################################################################################
+###############################################################################
 
 if 'sorted' not in dir(__builtins__):
     def sorted(L):
@@ -55,6 +56,7 @@ if 'sorted' not in dir(__builtins__):
 
 if 'set' not in dir(__builtins__):
     from sets import Set as set
+
 
 def isiterable(obj):
     """Check whether object is iterable.
@@ -67,6 +69,7 @@ def isiterable(obj):
     False
     """
     return hasattr(obj, '__iter__') or isinstance(obj, basestring)
+
 
 def has_extension(filename, ext):
     """Check if filename has given extension.
@@ -83,6 +86,7 @@ def has_extension(filename, ext):
         True
     """
     return os.path.splitext(filename.lower())[1] == ext.lower()
+
 
 def discover_file_type(filename):
     """Discover type of a file according to its name and its parent directory.
@@ -139,10 +143,11 @@ def discover_file_type(filename):
         # Most test frameworks look for files starting with "test_".
         # py.test also looks at files with trailing "_test".
         if filename.lower().startswith('test_') or \
-               os.path.splitext(filename)[0].lower().endswith('_test'):
+           os.path.splitext(filename)[0].lower().endswith('_test'):
             return 'test'
 
         return 'module'
+
 
 def get_files_of_type(file_list, file_type):
     """Return files from `file_list` that match given `file_type`.
@@ -152,6 +157,7 @@ def get_files_of_type(file_list, file_type):
     ['test/test_foo.py', 'test/test_bar.py']
     """
     return filter(lambda x: discover_file_type(x) == file_type, file_list)
+
 
 def get_package_name_from_path(path):
     """Get package name as file portion of path.
@@ -166,6 +172,7 @@ def get_package_name_from_path(path):
     dir, filename = os.path.split(path)
     return filename
 
+
 def get_package_name_from_url(url):
     """Use ``urlparse`` to obtain package name from URL.
 
@@ -174,8 +181,9 @@ def get_package_name_from_url(url):
     >>> get_package_name_from_url('https://www.example.com/some/dir/file.txt')
     'file.txt'
     """
-    (scheme,location,path,param,query,fragment_id) = urlparse(url)
+    (scheme, location, path, param, query, fragment_id) = urlparse(url)
     return get_package_name_from_path(path)
+
 
 def get_package_name_and_type(package, known_extensions):
     """Return package name and type.
@@ -190,8 +198,10 @@ def get_package_name_and_type(package, known_extensions):
     """
     for package_type in known_extensions:
         if package.endswith('.'+package_type):
-            # Package name is name of package without file extension (ex. twill-7.3).
+            # Package name is name of package without file extension
+            # (ex. twill-7.3).
             return package[:package.rfind('.'+package_type)], package_type
+
 
 def get_method_arguments(method):
     """Return tuple of arguments for given method, excluding self.
@@ -203,6 +213,7 @@ def get_method_arguments(method):
     ('arg1', 'arg2', 'other_arg')
     """
     return method.func_code.co_varnames[1:method.func_code.co_argcount]
+
 
 def get_attributes(obj, names):
     """Return attributes dictionary with keys from `names`.
@@ -227,6 +238,7 @@ def get_attributes(obj, names):
         attrs[name] = getattr(obj, name, None)
 
     return attrs
+
 
 def camel2underscore(name):
     """Convert name from CamelCase to underscore_name.
@@ -253,6 +265,7 @@ def camel2underscore(name):
     name = re.sub(r'([A-Z]+)', capitalize, name)
     return re.sub(r'([A-Z])', underscore, name)
 
+
 def index_class_to_name(clsname):
     """Covert index class name to index name.
 
@@ -265,6 +278,7 @@ def index_class_to_name(clsname):
     """
     return camel2underscore(clsname.replace('Index', '', 1))
 
+
 def is_empty(path):
     """Returns True if file or directory pointed by `path` is empty.
     """
@@ -274,6 +288,7 @@ def is_empty(path):
         return True
 
     return False
+
 
 def strip_dir_part(path, root):
     """Strip `root` part from `path`.
@@ -294,6 +309,7 @@ def strip_dir_part(path, root):
 
     return path
 
+
 def get_files_dirs_list(root):
     """Return list of all files and directories below `root`.
 
@@ -309,6 +325,7 @@ def get_files_dirs_list(root):
 
     return files, directories
 
+
 def length(L):
     """Overall length of all strings in list.
 
@@ -317,16 +334,17 @@ def length(L):
     """
     return sum(map(lambda x: len(x), L))
 
+
 def generate_arguments(arguments, max_length):
     """Pass list of strings in chunks of size not greater than max_length.
 
     >>> for x in generate_arguments(['abc', 'def'], 4):
-    ...     print x
+    ...     print(x)
     ['abc']
     ['def']
 
     >>> for x in generate_arguments(['a', 'bc', 'd', 'e', 'f'], 2):
-    ...     print x
+    ...     print(x)
     ['a']
     ['bc']
     ['d', 'e']
@@ -348,7 +366,8 @@ def generate_arguments(arguments, max_length):
     # We have to look ahead, so C-style loop here.
     while arguments:
         if L == [] and len(arguments[i]) > max_length:
-            raise ValueError("Argument '%s' larger than %d." % (arguments[i], max_length))
+            raise ValueError("Argument '%s' larger than %d." % (arguments[i],
+                                                                max_length))
 
         L.append(arguments[i])
 
@@ -364,9 +383,10 @@ def generate_arguments(arguments, max_length):
 
         i += 1
 
-################################################################################
+
+###############################################################################
 ## Main index class.
-################################################################################
+###############################################################################
 
 class NameSetter(type):
     def __init__(cls, name, bases, dict):
@@ -378,7 +398,9 @@ class NameSetter(type):
 
             def _timed_compute_with(self, cheesecake):
                 (ret, self.time_taken) = time_function(lambda: orig_compute_with(self, cheesecake))
-                self.cheesecake.log.debug("Index %s computed in %.2f seconds." % (self.name, self.time_taken))
+                self.cheesecake.log.debug(("Index %s computed in "
+                                           "%.2f seconds.") %
+                                          (self.name, self.time_taken))
                 return ret
 
             setattr(cls, 'compute_with', _timed_compute_with)
@@ -386,11 +408,13 @@ class NameSetter(type):
     def __repr__(cls):
         return '<Index class: %s>' % cls.name
 
+
 def make_indices_dict(indices):
     indices_dict = {}
     for index in indices:
         indices_dict[index.name] = index
     return indices_dict
+
 
 class Index(object):
     """Class describing one index.
@@ -451,7 +475,8 @@ class Index(object):
         """Take given Cheesecake instance and compute index value.
         """
         self.cheesecake = cheesecake
-        return self.compute(**get_attributes(cheesecake, self._compute_arguments))
+        return self.compute(**get_attributes(cheesecake,
+                                             self._compute_arguments))
 
     def compute(self):
         """Compute index value and return it.
@@ -504,7 +529,7 @@ class Index(object):
     def _get_requirements(self):
         if self.subindices:
             return list(self._compute_arguments) + \
-                   reduce(lambda x,y: x + y.requirements, self.subindices, [])
+                   reduce(lambda x, y: x + y.requirements, self.subindices, [])
         return list(self._compute_arguments)
 
     requirements = property(_get_requirements)
@@ -536,7 +561,9 @@ class Index(object):
     def _print_info_one(self):
         if self.cheesecake.verbose:
             sys.stdout.write(self.get_info())
-        print "%s  (%s)" % (pad_msg(index_class_to_name(self.name), self.value), self.details)
+        print("%s  (%s)" % (pad_msg(index_class_to_name(self.name),
+                                    self.value),
+                            self.details))
 
     def _print_info_many(self):
         max_value = self.max_value
@@ -544,15 +571,15 @@ class Index(object):
             return
 
         percentage = int(ceil(float(self.value) / float(max_value) * 100))
-        print pad_line("-")
+        print(pad_line("-"))
 
-        print pad_msg("%s INDEX (ABSOLUTE)" % self.name, self.value)
+        print(pad_msg("%s INDEX (ABSOLUTE)" % self.name, self.value))
         msg = pad_msg("%s INDEX (RELATIVE)" % self.name, percentage)
         msg += "  (%d out of a maximum of %d points is %d%%)" %\
                (self.value, max_value, percentage)
 
-        print msg
-        print
+        print(msg)
+        print("")
 
     def print_info(self):
         """Print index name padded with dots, followed by value and details.
@@ -567,18 +594,22 @@ class Index(object):
 
     def get_info(self):
         if self.subindices:
-            return ''.join(map(lambda index: index.get_info(), self.subindices))
+            return ''.join(map(lambda index: index.get_info(),
+                               self.subindices))
         return self.info
 
-################################################################################
+###############################################################################
 ## Index that computes scores based on files and directories.
-################################################################################
+###############################################################################
+
 
 class OneOf(object):
     def __init__(self, *possibilities):
         self.possibilities = possibilities
+
     def __str__(self):
         return '/'.join(map(lambda x: str(x), self.possibilities))
+
 
 def WithOptionalExt(name, extensions):
     """Handy way of writing Cheese rules for files with extensions.
@@ -598,8 +629,10 @@ def WithOptionalExt(name, extensions):
 
     return OneOf(*possibilities)
 
+
 def Doc(name):
     return WithOptionalExt(name, ['html', 'txt', 'rst', 'md'])
+
 
 class FilesIndex(Index):
     _used_rules = []
@@ -621,7 +654,7 @@ class FilesIndex(Index):
     def get_score(self, name, specs):
         for entry, value in specs.iteritems():
             if self.match_filename(name, entry):
-                self.cheesecake.log.debug("%d points entry found: %s (%s)" % \
+                self.cheesecake.log.debug("%d points entry found: %s (%s)" %
                                           (value, name, entry))
                 return value
 
@@ -669,9 +702,10 @@ class FilesIndex(Index):
 
         return False
 
-################################################################################
+
+###############################################################################
 ## Installability index.
-################################################################################
+###############################################################################
 
 class IndexUrlDownload(Index):
     """Give points for successful downloading of a package.
@@ -680,7 +714,7 @@ class IndexUrlDownload(Index):
 
     def compute(self, downloaded_from_url, package, url):
         if downloaded_from_url:
-            self.details = "downloaded package %s from URL %s"  % (package, url)
+            self.details = "downloaded package %s from URL %s" % (package, url)
             self.value = self.max_value
         else:
             self.value = 0
@@ -689,6 +723,7 @@ class IndexUrlDownload(Index):
 
     def decide_before_download(self, cheesecake):
         return cheesecake.url
+
 
 class IndexUnpack(Index):
     """Give points for successful unpacking of a package archive.
@@ -704,6 +739,7 @@ class IndexUnpack(Index):
             self.value = 0
 
         return self.value
+
 
 class IndexUnpackDir(Index):
     """Check if package unpack directory resembles package archive name.
@@ -725,6 +761,7 @@ class IndexUnpackDir(Index):
     def decide_after_download(self, cheesecake):
         return cheesecake.package_type != 'egg'
 
+
 class IndexSetupPy(FilesIndex):
     """Reward packages that have setup.py file.
     """
@@ -736,7 +773,9 @@ class IndexSetupPy(FilesIndex):
     }
 
     def compute(self, files_list, package_dir):
-        setup_py_found, self.value = self._compute_from_rules(files_list, package_dir, self.files_rules)
+        setup_py_found, self.value = self._compute_from_rules(files_list,
+                                                              package_dir,
+                                                              self.files_rules)
 
         if setup_py_found:
             self.details = "setup.py found"
@@ -748,6 +787,7 @@ class IndexSetupPy(FilesIndex):
     def decide_after_download(self, cheesecake):
         return cheesecake.package_type != 'egg'
 
+
 class IndexInstall(Index):
     """Check if package can be installed via "python setup.py" command.
     """
@@ -758,13 +798,15 @@ class IndexInstall(Index):
             self.details = "package installed in %s" % sandbox_install_dir
             self.value = self.max_value
         else:
-            self.details = "could not install package in %s" % sandbox_install_dir
+            self.details = ("could not install package "
+                            "in %s" % sandbox_install_dir)
             self.value = 0
 
         return self.value
 
     def decide_before_download(self, cheesecake):
         return not cheesecake.static_only
+
 
 class IndexPyPIDownload(Index):
     """Check if package was successfully downloaded from PyPI
@@ -776,7 +818,12 @@ class IndexPyPIDownload(Index):
     max_value = 50
     distance_penalty = -5
 
-    def compute(self, package, found_on_cheeseshop, found_locally, distance_from_pypi, download_url):
+    def compute(self,
+                package,
+                found_on_cheeseshop,
+                found_locally,
+                distance_from_pypi,
+                download_url):
         if download_url:
             self.value = self.max_value
 
@@ -804,6 +851,7 @@ class IndexPyPIDownload(Index):
     def decide_before_download(self, cheesecake):
         return cheesecake.name
 
+
 class IndexGeneratedFiles(Index):
     """Lower score for automatically generated files that should
     not be present in a package.
@@ -820,13 +868,14 @@ class IndexGeneratedFiles(Index):
         if pyc_files > 0 or pyo_files > 0:
             self.value += self.generated_files_penalty
 
-        self.details = "%d .pyc and %d .pyo files found" % \
-                                  (pyc_files, pyo_files)
+        self.details = ("%d .pyc and %d .pyo files found" %
+                        (pyc_files, pyo_files))
 
         return self.value
 
     def decide_after_download(self, cheesecake):
         return cheesecake.package_type != 'egg'
+
 
 class IndexInstallability(Index):
     name = "INSTALLABILITY"
@@ -841,9 +890,10 @@ class IndexInstallability(Index):
         IndexGeneratedFiles,
     ]
 
-################################################################################
+
+###############################################################################
 ## Documentation index.
-################################################################################
+###############################################################################
 
 class IndexRequiredFiles(FilesIndex):
     """Check for existence of important files, like README or INSTALL.
@@ -884,14 +934,20 @@ class IndexRequiredFiles(FilesIndex):
                 msg = positive_msg
                 if key in missing:
                     msg = negative_msg
-                self.add_info(msg % (importance.get(dictionary[key], ''), what, str(key)))
+                self.add_info(msg % (importance.get(dictionary[key], ''),
+                              what,
+                              str(key)))
 
         # Compute required files.
-        files_count, files_value = self._compute_from_rules(files_list, package_dir, self.cheese_files)
+        files_count, files_value = self._compute_from_rules(files_list,
+                                                            package_dir,
+                                                            self.cheese_files)
         make_info(self.cheese_files, 'file')
 
         # Compute required directories.
-        dirs_count, dirs_value = self._compute_from_rules(dirs_list, package_dir, self.cheese_dirs)
+        dirs_count, dirs_value = self._compute_from_rules(dirs_list,
+                                                          package_dir,
+                                                          self.cheese_dirs)
         make_info(self.cheese_dirs, 'directory')
 
         self.value = files_value + dirs_value
@@ -900,6 +956,7 @@ class IndexRequiredFiles(FilesIndex):
                        (files_count, dirs_count)
 
         return self.value
+
 
 class IndexDocstrings(Index):
     """Compute how many objects have relevant docstrings.
@@ -915,9 +972,10 @@ class IndexDocstrings(Index):
         self.value = int(ceil(percent * self.max_value))
 
         self.details = "found %d/%d=%.2f%% objects with docstrings" %\
-                 (docstring_cnt, object_cnt, percent*100)
+                       (docstring_cnt, object_cnt, percent*100)
 
         return self.value
+
 
 class IndexFormattedDocstrings(Index):
     """Compute how many of existing docstrings include any formatting,
@@ -931,24 +989,31 @@ class IndexFormattedDocstrings(Index):
             percent = float(docformat_cnt)/float(object_cnt)
 
         # Scale the result.
-        # We give 10p for 25% of formatted docstrings, 20p for 50% and 30p for 75%.
+        # We give 10p for 25% of formatted docstrings, 20p for 50% and
+        # 30p for 75%.
         self.value = 0
         if percent > 0.75:
-            self.add_info("%.2f%% formatted docstrings found, which is > 75%% and is worth 30p." % (percent*100))
+            self.add_info(("%.2f%% formatted docstrings found, which is "
+                           "> 75%% and is worth 30p.") % (percent*100))
             self.value = 30
         elif percent > 0.50:
-            self.add_info("%.2f%% formatted docstrings found, which is > 50%% and is worth 20p." % (percent*100))
+            self.add_info(("%.2f%% formatted docstrings found, which is "
+                           "> 50%% and is worth 20p.") % (percent*100))
             self.value = 20
         elif percent > 0.25:
-            self.add_info("%.2f%% formatted docstrings found, which is > 25%% and is worth 10p." % (percent*100))
+            self.add_info(("%.2f%% formatted docstrings found, which is "
+                           "> 25%% and is worth 10p.") % (percent*100))
             self.value = 10
         else:
-            self.add_info("%.2f%% formatted docstrings found, which is < 25%%, no points given." % (percent*100))
+            self.add_info(("%.2f%% formatted docstrings found, which is "
+                           "< 25%%, no points given.") % (percent*100))
 
-        self.details = "found %d/%d=%.2f%% objects with formatted docstrings" %\
-                 (docformat_cnt, object_cnt, percent*100)
+        self.details = (("found %d/%d=%.2f%% objects with formatted "
+                         "docstrings") %
+                        (docformat_cnt, object_cnt, percent*100))
 
         return self.value
+
 
 class IndexDocumentation(Index):
     name = "DOCUMENTATION"
@@ -959,9 +1024,10 @@ class IndexDocumentation(Index):
         IndexFormattedDocstrings,
     ]
 
-################################################################################
+
+###############################################################################
 ## Code "kwalitee" index.
-################################################################################
+###############################################################################
 
 class IndexUnitTests(Index):
     """Compute unittest index as percentage of methods/functions
@@ -993,10 +1059,12 @@ class IndexUnitTests(Index):
         # Scale the result.
         self.value = int(ceil(percent * self.max_value))
 
-        self.details = "found %d/%d=%.2f%% unit tested classes/methods/functions." %\
-                 (unittest_cnt, functions_classes_cnt, percent*100)
+        self.details = (("found %d/%d=%.2f%% unit tested "
+                         "classes/methods/functions.") %
+                        (unittest_cnt, functions_classes_cnt, percent*100))
 
         return self.value
+
 
 class IndexUnitTested(Index):
     """Check if the package has unit tests which can be easily found by
@@ -1004,7 +1072,8 @@ class IndexUnitTested(Index):
     """
     max_value = 30
 
-    def compute(self, doctests_count, unittests_count, files_list, classes, methods):
+    def compute(self, doctests_count, unittests_count, files_list, classes,
+                methods):
         unit_tested = False
 
         if doctests_count > 0:
@@ -1012,16 +1081,19 @@ class IndexUnitTested(Index):
             unit_tested = True
 
         if unittests_count > 0:
-            self.add_info("Package has tests that inherit from unittest.TestCase.")
+            self.add_info("Package has tests that inherit from "
+                          "unittest.TestCase.")
             unit_tested = True
 
         if get_files_of_type(files_list, 'test'):
-            self.add_info("Package has filenames which probably contain tests (in format test_* or *_test)")
+            self.add_info("Package has filenames which probably contain "
+                          "tests (in format test_* or *_test)")
             unit_tested = True
 
         for method in methods:
             if self._is_test_method(method):
-                self.add_info("Some classes have setUp/tearDown methods which are commonly used in unit tests.")
+                self.add_info("Some classes have setUp/tearDown methods which "
+                              "are commonly used in unit tests.")
                 unit_tested = True
                 break
 
@@ -1045,6 +1117,7 @@ class IndexUnitTested(Index):
                 return True
         return False
 
+
 class IndexPyLint(Index):
     """Compute pylint index of the whole package.
     """
@@ -1052,8 +1125,8 @@ class IndexPyLint(Index):
     max_value = 50
 
     disabled_messages = [
-        'W0403', # relative import
-        'W0406', # importing of self
+        'W0403',  # relative import
+        'W0406',  # importing of self
     ]
 
     def compute(self, files_list, package_dir, pylint_max_execution_time):
@@ -1072,8 +1145,8 @@ class IndexPyLint(Index):
         #     running it on individual modules.
         original_cwd = os.getcwd()
 
-        # Note: package_dir may be a file if the archive contains a single file.
-        # If this is the case, change dir to the parent dir of that file.
+        # Note: package_dir may be a file if the archive contains a single
+        # file. If this is the case, change dir to the parent dir of that file.
         if os.path.isfile(package_dir):
             package_dir = os.path.dirname(package_dir)
 
@@ -1084,20 +1157,28 @@ class IndexPyLint(Index):
         error_count = 0
 
         for filenames in generate_arguments(files_to_lint, max_arguments_length - len(self._pylint_args())):
-            filenames =  ' '.join(filenames)
-            self.cheesecake.log.debug("Running pylint on files: %s." % filenames)
+            filenames = ' '.join(filenames)
+            self.cheesecake.log.debug(("Running pylint on "
+                                       "files: %s.") % filenames)
 
             # Run pylint, but don't allow it to work longer than one minute.
-            rc, output = run_cmd("%s %s --persistent=n %s" % (pylint_location, filenames, self._pylint_args()),
+            rc, output = run_cmd("%s %s --persistent=n %s" %
+                                 (pylint_location,
+                                  filenames,
+                                  self._pylint_args()),
                                  max_timeout=pylint_max_execution_time)
             if rc:
                 if output == 'Time exceeded':
-                    # Raise and exception what will cause PyLint to be removed from list of indices
-                    #   and thus won't affect the score.
-                    self.cheesecake.log.debug("pylint exceeded maximum execution time of %d seconds and was terminated." % \
+                    # Raise and exception what will cause PyLint to be removed
+                    # from list of indices and thus won't affect the score.
+                    self.cheesecake.log.debug(("pylint exceeded maximum "
+                                               "execution time of %d seconds "
+                                               "and was terminated.") %
                                               pylint_max_execution_time)
                     raise OSError
-                self.cheesecake.log.debug("encountered an error (%d):\n***\n%s\n***\n" % (rc, output))
+                self.cheesecake.log.debug(("encountered an error "
+                                           "(%d):\n***\n%s\n***\n") %
+                                          (rc, output))
                 error_count += 1
             else:
                 # Extract score from pylint output.
@@ -1118,20 +1199,26 @@ class IndexPyLint(Index):
         else:
             self.details = "no files to check found"
 
-        # Assume scores below zero as zero for means of index value computation.
+        # Assume scores below zero as zero for means of index value
+        # computation.
         if pylint_score < 0:
             pylint_score = 0
         self.value = int(ceil(pylint_score/10.0 * self.max_value))
 
-        self.add_info("Score is %.2f/10, which is %d%% of maximum %d points = %d." %
-                      (pylint_score, int(pylint_score*10), self.max_value, self.value))
+        self.add_info(("Score is %.2f/10, which is %d%% of "
+                       "maximum %d points = %d.") %
+                      (pylint_score,
+                       int(pylint_score*10),
+                       self.max_value,
+                       self.value))
 
         return self.value
 
     def decide_before_download(self, cheesecake):
         # Try to run the pylint script
         if not command_successful("pylint --version"):
-            cheesecake.log.debug("pylint not properly installed, omitting pylint index.")
+            cheesecake.log.debug("pylint not properly installed, omitting "
+                                 "pylint index.")
             return False
 
         return not cheesecake.lite
@@ -1146,10 +1233,11 @@ class IndexPyLint(Index):
             else:
                 disable_option = "disable"
             return ' '.join(map(lambda x: '--%s=%s' % (disable_option, x),
-                    cls.disabled_messages))
+                                cls.disabled_messages))
         except ImportError:
             # pylint is not installed
             return ""
+
 
 class IndexPEP8(Index):
     """Compute PEP8 index for the modules in the package.
@@ -1209,21 +1297,28 @@ class IndexPEP8(Index):
         self.add_info("Count   Details")
         for stat in error_stats:
             self.add_info(stat)
-        self.add_info("pep8.py found %d error types; we're scoring %d per error type" % (errors, self.error_score))
+        self.add_info(("pep8.py found %d error types; "
+                       "we're scoring %d per error type") %
+                      (errors, self.error_score))
         self.add_info("Error score: %d" % total_error_score)
         self.add_info("Warnings:")
         self.add_info("Count   Details")
         for stat in warning_stats:
             self.add_info(stat)
-        self.add_info("pep8.py found %d warning types; we're scoring %d per warning type" % (warnings, self.warning_score))
+        self.add_info(("pep8.py found %d warning types; "
+                       "we're scoring %d per warning type") %
+                      (warnings, self.warning_score))
         self.add_info("Warning score: %d" % total_warning_score)
-        self.add_info("Total pep8 score: %d - %d = %d" % (self.max_value, abs(score), self.value))
+        self.add_info("Total pep8 score: %d - %d = %d" %
+                      (self.max_value, abs(score), self.value))
 
-        self.details = "pep8.py check: %d error types, %d warning types" % (errors, warnings)
+        self.details = ("pep8.py check: %d error types, %d warning types" %
+                        (errors, warnings))
         return self.value
 
     def decide_before_download(self, cheesecake):
         return cheesecake.with_pep8
+
 
 class IndexCodeKwalitee(Index):
     name = "CODE KWALITEE"
@@ -1235,9 +1330,10 @@ class IndexCodeKwalitee(Index):
         IndexPEP8,
     ]
 
-################################################################################
+
+###############################################################################
 ## Main Cheesecake class.
-################################################################################
+###############################################################################
 
 class CheesecakeError(Exception):
     """Custom exception class for Cheesecake-specific errors.
@@ -1264,12 +1360,14 @@ class Step(object):
         """Decide if step should be run.
 
         It checks if there's at least one index from current profile that need
-        variables provided by this step. Override this method for other behaviour.
+        variables provided by this step. Override this method for other
+        behaviour.
         """
         for provide in self.provides:
             if provide in cheesecake.index.requirements:
                 return True
         return False
+
 
 class StepByVariable(Step):
     """Step which is always run if given Cheesecake instance variable is true.
@@ -1285,6 +1383,7 @@ class StepByVariable(Step):
         # Fallback to the default.
         return Step.decide(self, cheesecake)
 
+
 class Cheesecake(object):
     """Computes 'goodness' of Python packages.
 
@@ -1293,7 +1392,8 @@ class Cheesecake(object):
         * whether the package can be downloaded
         * whether the package can be unpacked
         * whether the package can be installed into an alternate directory
-        * existence of certain files such as README, INSTALL, LICENSE, setup.py etc.
+        * existence of certain files such as README, INSTALL, LICENSE,
+          setup.py etc.
         * existence of certain directories such as doc, test, demo, examples
         * percentage of modules/functions/classes/methods with docstrings
         * percentage of functions/methods that are unit tested
@@ -1310,18 +1410,18 @@ class Cheesecake(object):
     }
 
     def __init__(self,
-                 keep_log                  = False,
-                 lite                      = False,
-                 logfile                   = None,
-                 name                      = "",
-                 path                      = "",
-                 pylint_max_execution_time = None,
-                 quiet                     = False,
-                 sandbox                   = None,
-                 static_only               = False,
-                 url                       = "",
-                 verbose                   = False,
-                 with_pep8                 = False):
+                 keep_log=False,
+                 lite=False,
+                 logfile=None,
+                 name="",
+                 path="",
+                 pylint_max_execution_time=None,
+                 quiet=False,
+                 sandbox=None,
+                 static_only=False,
+                 url="",
+                 verbose=False,
+                 with_pep8=False):
         """Initialize critical variables, download and unpack package,
         walk package tree.
         """
@@ -1336,7 +1436,8 @@ class Cheesecake(object):
         elif self.package_path:
             self.package = get_package_name_from_path(self.package_path)
         else:
-            self.raise_exception("No package name, URL or path specified... exiting")
+            self.raise_exception("No package name, URL or path specified... "
+                                 "exiting")
 
         # Setup a sandbox.
         self.sandbox = sandbox or tempfile.mkdtemp(prefix='cheesecake')
@@ -1365,7 +1466,8 @@ class Cheesecake(object):
         self.index = CheesecakeIndex()
 
         self.index.decide_before_download(self)
-        self.log.debug("Profile requirements: %s." % ', '.join(sorted(self.index.requirements)))
+        self.log.debug("Profile requirements: %s." %
+                       ', '.join(sorted(self.index.requirements)))
 
         # Get the package.
         self.run_step('get_pkg_from_pypi')
@@ -1373,11 +1475,13 @@ class Cheesecake(object):
         self.run_step('copy_pkg')
 
         # Get package name and type.
-        name_and_type = get_package_name_and_type(self.package, self.package_types.keys())
+        name_and_type = get_package_name_and_type(self.package,
+                                                  self.package_types.keys())
 
         if not name_and_type:
-            msg = "Could not determine package type for package '%s'" % self.package
-            msg += "\nCurrently recognized types: " + ", ".join(self.package_types.keys())
+            msg = (("Could not determine package type for package '%s'\n"
+                    "Currently recognized types: %s") %
+                   (self.package, ", ".join(self.package_types.keys())))
             self.raise_exception(msg)
 
         self.package_name, self.package_type = name_and_type
@@ -1397,7 +1501,8 @@ class Cheesecake(object):
     def raise_exception(self, msg):
         """Cleanup, print error message and raise CheesecakeError.
 
-        Don't use logging, since it can be called before logging has been setup.
+        Don't use logging, since it can be called before logging has been
+        setup.
         """
         self.cleanup(remove_log_file=False)
 
@@ -1440,7 +1545,8 @@ class Cheesecake(object):
         if logfile:
             self.logfile = logfile
         else:
-            self.logfile = os.path.join(tempfile.gettempdir(), self.package + ".log")
+            self.logfile = os.path.join(tempfile.gettempdir(),
+                                        self.package + ".log")
 
         self.logfile_descriptor = open(str(self.logfile), 'w', buffering=1)
         logger.setconsumer('logfile', self.logfile_descriptor)
@@ -1467,6 +1573,7 @@ class Cheesecake(object):
                                                  'found_on_cheeseshop',
                                                  'found_locally',
                                                  'sandbox_pkg_file'])
+
     def get_pkg_from_pypi(self):
         """Download package using setuptools utilities.
 
@@ -1480,7 +1587,8 @@ class Cheesecake(object):
           found_locally : bool
               Whenever package has been already installed.
         """
-        self.log.info("Trying to download package %s from PyPI using setuptools utilities" % self.name)
+        self.log.info(("Trying to download package %s from PyPI using "
+                       "setuptools utilities") % self.name)
 
         try:
             from setuptools.package_index import PackageIndex
@@ -1488,9 +1596,14 @@ class Cheesecake(object):
             from distutils import log
             from distutils.errors import DistutilsError
         except ImportError, e:
-            msg = "setuptools is not installed and is required for downloading a package by name\n"
-            msg += "You can download and process a package by its full URL via the -u or --url option\n"
-            msg += "Example: python cheesecake.py --url=http://www.mems-exchange.org/software/durus/Durus-3.1.tar.gz"
+            url = ("http://www.mems-exchange.org/software/"
+                   "durus/Durus-3.1.tar.gz")
+            msg = ("setuptools is not installed and is required for "
+                   "downloading a package by name\n"
+                   "You can download and process a package by its full URL "
+                   "via the -u or --url option\n"
+                   "Example: python cheesecake.py "
+                   "--url=%s") % url
             self.raise_exception(msg)
 
         def drop_setuptools_info(stdout, error=None):
@@ -1533,8 +1646,8 @@ class Cheesecake(object):
             except DistutilsError, e:
                 return False, e
 
-        # Temporarily set the log verbosity to INFO so we can capture setuptools
-        # info messages.
+        # Temporarily set the log verbosity to INFO so we can capture
+        # setuptools info messages.
         old_threshold = log.set_threshold(log.INFO)
         old_stdout = sys.stdout
         sys.stdout = StdoutRedirector()
@@ -1559,12 +1672,14 @@ class Cheesecake(object):
         # If all runs failed, we must raise an error.
         if not status:
             drop_setuptools_info(captured_stdout, output)
-            self.raise_exception("setuptools returned an error: %s\n" % str(output).splitlines()[0])
+            self.raise_exception("setuptools returned an error: %s\n" %
+                                 str(output).splitlines()[0])
 
         # If fetch returned nothing, package wasn't found.
         if output is None:
             drop_setuptools_info(captured_stdout)
-            self.raise_exception("Could not find distribution for " + self.name)
+            self.raise_exception("Could not find distribution for %s" %
+                                 self.name)
 
         # Defaults.
         self.download_url = ""
@@ -1586,7 +1701,8 @@ class Cheesecake(object):
 
         self.sandbox_pkg_file = output
         self.package = get_package_name_from_path(output)
-        self.log.info("Downloaded package %s from %s" % (self.package, self.download_url))
+        self.log.info("Downloaded package %s from %s" % (self.package,
+                                                         self.download_url))
 
         if os.path.isdir(self.sandbox_pkg_file):
             self.found_locally = True
@@ -1597,42 +1713,53 @@ class Cheesecake(object):
     steps['download_pkg'] = StepByVariable('url',
                                            ['sandbox_pkg_file',
                                             'downloaded_from_url'])
+
     def download_pkg(self):
-        """Use ``urllib.urlretrieve`` to download package to file in sandbox dir.
+        """Use ``urllib.urlretrieve`` to download package to file in sandbox
+           dir.
         """
-        #self.log("Downloading package %s from URL %s" % (self.package, self.url))
+        #self.log("Downloading package %s from URL %s" %
+        #         (self.package, self.url))
         self.sandbox_pkg_file = os.path.join(self.sandbox, self.package)
         try:
-            downloaded_filename, headers = urlretrieve(self.url, self.sandbox_pkg_file)
+            downloaded_filename, headers = urlretrieve(self.url,
+                                                       self.sandbox_pkg_file)
         except IOError, e:
-            self.log.error("Error downloading package %s from URL %s"  % (self.package, self.url))
+            self.log.error("Error downloading package %s from URL %s" %
+                           (self.package, self.url))
             self.raise_exception(str(e))
-        #self.log("Downloaded package %s to %s" % (self.package, downloaded_filename))
+        #self.log("Downloaded package %s to %s" % (self.package,
+        #                                          downloaded_filename))
 
         if headers.gettype() in ["text/html"]:
             f = open(downloaded_filename)
             if re.search("404 Not Found", "".join(f.readlines())):
                 f.close()
-                self.raise_exception("Got '404 Not Found' error while trying to download package ... exiting")
+                self.raise_exception("Got '404 Not Found' error while trying "
+                                     "to download package ... exiting")
             f.close()
 
         self.downloaded_from_url = True
 
     steps['copy_pkg'] = StepByVariable('package_path',
                                        ['sandbox_pkg_file'])
+
     def copy_pkg(self):
         """Copy package file to sandbox directory.
         """
         self.sandbox_pkg_file = os.path.join(self.sandbox, self.package)
         if not os.path.isfile(self.package_path):
-            self.raise_exception("%s is not a valid file ... exiting" % self.package_path)
-        self.log("Copying file %s to %s" % (self.package_path, self.sandbox_pkg_file))
+            self.raise_exception("%s is not a valid file ... exiting" %
+                                 self.package_path)
+        self.log("Copying file %s to %s" % (self.package_path,
+                                            self.sandbox_pkg_file))
         shutil.copyfile(self.package_path, self.sandbox_pkg_file)
 
     steps['unpack_pkg'] = Step(['original_package_name',
                                 'sandbox_pkg_dir',
                                 'unpacked',
                                 'unpack_dir'])
+
     def unpack_pkg(self):
         """Unpack the package in the sandbox directory.
 
@@ -1654,7 +1781,7 @@ class Cheesecake(object):
         self.unpack_dir = unpack(self.sandbox_pkg_file, self.sandbox)
 
         if self.unpack_dir is None:
-            self.raise_exception("Could not unpack package %s ... exiting" % \
+            self.raise_exception("Could not unpack package %s ... exiting" %
                                  self.sandbox_pkg_file)
 
         self.unpacked = True
@@ -1674,6 +1801,7 @@ class Cheesecake(object):
                               'methods',
                               'object_cnt',
                               'package_dir'])
+
     def walk_pkg(self):
         """Get package files and directories.
 
@@ -1730,12 +1858,13 @@ class Cheesecake(object):
             self.unittests_count += code.unittests_count
 
         # Log a bit of debugging info.
-        self.log.debug("Found %d files: %s." % (len(self.files_list),
-                                                ', '.join(self.files_list)))
-        self.log.debug("Found %d directories: %s." % (len(self.dirs_list),
-                                                      ', '.join(self.dirs_list)))
+        self.log.debug("Found %d files: %s." %
+                       (len(self.files_list), ', '.join(self.files_list)))
+        self.log.debug("Found %d directories: %s." %
+                       (len(self.dirs_list), ', '.join(self.dirs_list)))
 
     steps['install_pkg'] = Step(['installed'])
+
     def install_pkg(self):
         """Verify that package can be installed in alternate directory.
 
@@ -1745,12 +1874,16 @@ class Cheesecake(object):
         """
         self.log.info("Trying to install package %s" % self.name)
 
-        self.sandbox_install_dir = os.path.join(self.sandbox, "tmp_install_%s" % self.package_name)
+        self.sandbox_install_dir = os.path.join(self.sandbox,
+                                                ("tmp_install_%s" %
+                                                 self.package_name))
 
         if self.package_type == 'egg':
             # Create dummy Python directories.
-            mkdirs('%s/lib/python2.3/site-packages/' % self.sandbox_install_dir)
-            mkdirs('%s/lib/python2.4/site-packages/' % self.sandbox_install_dir)
+            mkdirs('%s/lib/python2.3/site-packages/' %
+                   self.sandbox_install_dir)
+            mkdirs('%s/lib/python2.4/site-packages/' %
+                   self.sandbox_install_dir)
 
             environment = {'PYTHONPATH':
                            '%(sandbox)s/lib/python2.3/site-packages/:'\
@@ -1758,7 +1891,7 @@ class Cheesecake(object):
                            {'sandbox': self.sandbox_install_dir},
                            # Pass PATH to child process.
                            'PATH': os.getenv('PATH')}
-            rc, output = run_cmd("easy_install --no-deps --prefix %s %s" % \
+            rc, output = run_cmd("easy_install --no-deps --prefix %s %s" %
                                  (self.sandbox_install_dir,
                                   self.sandbox_pkg_file),
                                  environment)
@@ -1768,7 +1901,7 @@ class Cheesecake(object):
                 package_dir = self.sandbox
             cwd = os.getcwd()
             os.chdir(package_dir)
-            rc, output = run_cmd("python setup.py install --root=%s" % \
+            rc, output = run_cmd("python setup.py install --root=%s" %
                                  self.sandbox_install_dir)
             os.chdir(cwd)
 
@@ -1779,7 +1912,7 @@ class Cheesecake(object):
                 self.log(output_line)
             self.log('*** End of captured output.')
         else:
-            self.log('Installation into %s successful.' % \
+            self.log('Installation into %s successful.' %
                      self.sandbox_install_dir)
             self.installed = True
 
@@ -1796,29 +1929,33 @@ class Cheesecake(object):
 
         percentage = (cheesecake_index * 100) / max_cheesecake_index
 
-        self.log.info("A given package can currently reach a MAXIMUM number of %d points" % max_cheesecake_index)
-        self.log.info("Starting computation of Cheesecake index for package '%s'" % (self.package))
+        self.log.info("A given package can currently reach a MAXIMUM "
+                      "number of %d points" % max_cheesecake_index)
+        self.log.info("Starting computation of Cheesecake index for "
+                      "package '%s'" % (self.package))
 
         # Print summary.
         if self.quiet:
-            print "Cheesecake index: %d (%d / %d)" % (percentage,
+            print("Cheesecake index: %d (%d / %d)" % (percentage,
                                                       cheesecake_index,
-                                                      max_cheesecake_index)
+                                                      max_cheesecake_index))
         else:
-            print
-            print pad_line("=")
-            print pad_msg("OVERALL CHEESECAKE INDEX (ABSOLUTE)", cheesecake_index)
-            print "%s  (%d out of a maximum of %d points is %d%%)" % \
+            print("")
+            print(pad_line("="))
+            print(pad_msg("OVERALL CHEESECAKE INDEX (ABSOLUTE)",
+                          cheesecake_index))
+            print("%s  (%d out of a maximum of %d points is %d%%)" %
                   (pad_msg("OVERALL CHEESECAKE INDEX (RELATIVE)", percentage),
                    cheesecake_index,
                    max_cheesecake_index,
-                   percentage)
+                   percentage))
 
         return cheesecake_index
 
-################################################################################
+
+###############################################################################
 ## Command line.
-################################################################################
+###############################################################################
 
 def process_cmdline_args():
     """Parse command-line options.
@@ -1826,45 +1963,80 @@ def process_cmdline_args():
     parser = OptionParser()
 
     # Options for package retrieval.
-    parser.add_option("-n", "--name", dest="name",
-                      default="", help="package name (will be retrieved via setuptools utilities, if present)")
-    parser.add_option("-p", "--path", dest="path",
-                      default="", help="path of tar.gz/zip package on local file system")
-    parser.add_option("-u", "--url", dest="url",
-                      default="", help="package URL")
+    parser.add_option("-n", "--name",
+                      dest="name",
+                      default="",
+                      help=("package name (will be retrieved via "
+                            "setuptools utilities, if present)"))
+    parser.add_option("-p", "--path",
+                      dest="path",
+                      default="",
+                      help="path of tar.gz/zip package on local file system")
+    parser.add_option("-u", "--url",
+                      dest="url",
+                      default="",
+                      help="package URL")
 
     # Output formatting options.
-    parser.add_option("-q", "--quiet", action="store_true", dest="quiet",
-                      default=False, help="only print Cheesecake index value (default=False)")
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
-                      default=False, help="verbose output (default=False)")
+    parser.add_option("-q", "--quiet",
+                      action="store_true",
+                      dest="quiet",
+                      default=False,
+                      help=("only print Cheesecake index value "
+                            "(default=False)"))
+    parser.add_option("-v", "--verbose",
+                      action="store_true",
+                      dest="verbose",
+                      default=False,
+                      help="verbose output (default=False)")
 
     # Index choice options.
-    parser.add_option("--lite", action="store_true", dest="lite",
-                      default=False, help="don't run time-consuming tests (default=False)")
-    parser.add_option("-t", "--static", action="store_true", dest="static",
-                      default=False, help="don't run any code from the package being tested (default=False)")
-    parser.add_option("--with-pep8", action="store_true", dest="with_pep8",
-                      default=False, help="check pep8 conformance")
+    parser.add_option("--lite",
+                      action="store_true",
+                      dest="lite",
+                      default=False,
+                      help="don't run time-consuming tests (default=False)")
+    parser.add_option("-t", "--static",
+                      action="store_true",
+                      dest="static",
+                      default=False,
+                      help=("don't run any code from the package being "
+                            "tested (default=False)"))
+    parser.add_option("--with-pep8",
+                      action="store_true",
+                      dest="with_pep8",
+                      default=False,
+                      help="check pep8 conformance")
 
     # Other options.
-    parser.add_option("-l", "--logfile", dest="logfile",
+    parser.add_option("-l", "--logfile",
+                      dest="logfile",
                       default=None,
                       help="file to log all cheesecake messages")
-    parser.add_option("-s", "--sandbox", dest="sandbox",
+    parser.add_option("-s", "--sandbox",
+                      dest="sandbox",
                       default=None,
-                      help="directory where package will be unpacked "\
-                           "(default is to use random directory inside %s)" % tempfile.gettempdir())
-    parser.add_option("--keep-log", action="store_true", dest="keep_log",
-                      default=False, help="don't remove log file even if run was successful")
-    parser.add_option("--pylint-max-execution-time", action="store", dest="pylint_max_execution_time",
-                      default=120, help="maximum time (in seconds) you allow pylint process to run (default=120)")
+                      help=("directory where package will be unpacked "
+                            "(default is to use random directory inside %s)") %
+                           tempfile.gettempdir())
+    parser.add_option("--keep-log",
+                      action="store_true",
+                      dest="keep_log",
+                      default=False,
+                      help="don't remove log file even if run was successful")
+    parser.add_option("--pylint-max-execution-time",
+                      action="store",
+                      dest="pylint_max_execution_time",
+                      default=120,
+                      help=("maximum time (in seconds) you allow pylint "
+                            "process to run (default=120)"))
 
     parser.add_option("-V", "--version", action="store_true", dest="version",
                       default=False, help="Output cheesecake version and exit")
 
     (options, args) = parser.parse_args()
     return options
+
 
 def main():
     """Display Cheesecake index for package specified via command-line options.
@@ -1885,30 +2057,30 @@ def main():
     pylint_max_execution_time = int(options.pylint_max_execution_time)
 
     if version:
-        print "Cheesecake version %s (rev. %s)" % (VERSION, __revision__)
+        print("Cheesecake version %s (rev. %s)" % (VERSION, __revision__))
         sys.exit(0)
 
     if not name and not url and not path:
-        print "Error: No package name, URL or path specified (see --help)"
+        print("Error: No package name, URL or path specified (see --help)")
         sys.exit(1)
 
     try:
-        c = Cheesecake(keep_log                  = keep_log,
-                       lite                      = lite,
-                       logfile                   = logfile,
-                       name                      = name,
-                       path                      = path,
-                       pylint_max_execution_time = pylint_max_execution_time,
-                       quiet                     = quiet,
-                       sandbox                   = sandbox,
-                       static_only               = static_only,
-                       url                       = url,
-                       verbose                   = verbose,
-                       with_pep8                 = with_pep8)
+        c = Cheesecake(keep_log=keep_log,
+                       lite=lite,
+                       logfile=logfile,
+                       name=name,
+                       path=path,
+                       pylint_max_execution_time=pylint_max_execution_time,
+                       quiet=quiet,
+                       sandbox=sandbox,
+                       static_only=static_only,
+                       url=url,
+                       verbose=verbose,
+                       with_pep8=with_pep8)
         c.compute_cheesecake_index()
         c.cleanup()
     except CheesecakeError, e:
-        print str(e)
+        print(str(e))
 
 if __name__ == "__main__":
     main()
