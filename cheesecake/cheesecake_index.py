@@ -1227,8 +1227,8 @@ class IndexPyLint(Index):
     def _pylint_args(cls):
         try:
             import pylint.__pkginfo__
-            version = map(int, pylint.__pkginfo__.version.split('.'))
-            if version > (0, 21):
+            from distutils.version import LooseVersion
+            if LooseVersion(pylint.__pkginfo__.version) > LooseVersion("0.21"):
                 disable_option = "disable-msg"
             else:
                 disable_option = "disable"
