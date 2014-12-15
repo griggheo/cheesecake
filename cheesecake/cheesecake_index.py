@@ -599,7 +599,7 @@ def WithOptionalExt(name, extensions):
     return OneOf(*possibilities)
 
 def Doc(name):
-    return WithOptionalExt(name, ['html', 'txt', 'rst'])
+    return WithOptionalExt(name, ['html', 'txt', 'rst', 'md'])
 
 class FilesIndex(Index):
     _used_rules = []
