@@ -28,7 +28,7 @@ class TestIndexPyLint(object):
 
         # Check that package got maximum score, what means importing self
         #     is not decreasing the score.
-        print index.value
+        print(index.value)
         assert index.value == index.max_value
 
     def test_long_file_list(self):

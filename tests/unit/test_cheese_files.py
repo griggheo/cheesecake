@@ -22,8 +22,9 @@ class CheeseFilesTest(MockupCheesecakeTest):
         loglines = ''.join(readlines_from_file(self._mock_logfile))
 
         for filename in files:
-            print "Checking if %s was counted..." % filename
+            print("Checking if %s was counted..." % filename)
             assert cheesefile_in_log(filename, loglines) is inside_log
+
 
 class TestBogusCheeseFiles(CheeseFilesTest):
     def test_bogus_filenames(self):
@@ -35,10 +36,12 @@ class TestBogusCheeseFiles(CheeseFilesTest):
                            'setup.py.txt']
         self._do_it(bogus_filenames, self.create_files, False)
 
+
 class TestGoodCheeseFiles(CheeseFilesTest):
     def test_good_filenames(self):
         good_filenames = ['Readme', 'INSTALL.txt', 'setup.py', 'news.TXT']
         self._do_it(good_filenames, self.create_files, True)
+
 
 class TestEmptyCheeseFiles(CheeseFilesTest):
     def test_empty_filenames(self):

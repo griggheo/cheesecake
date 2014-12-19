@@ -20,8 +20,10 @@ def compile_regex(pattern, user_map=None):
     """
 
     # Handy regular expressions.
-    mapping = {'ALPHA': r'[-.,?!\w]', 'WORD': r'[-.,?!\s\w]',
-                       'START': r'(^|\s)', 'END': r'([.,?!\s]|$)'}
+    mapping = {'ALPHA': r'[-.,?!\w]',
+               'WORD': r'[-.,?!\s\w]',
+               'START': r'(^|\s)',
+               'END': r'([.,?!\s]|$)'}
 
     if user_map:
         mapping = mapping.copy()
@@ -36,12 +38,14 @@ def compile_regex(pattern, user_map=None):
 
     return re.compile(pattern, re.LOCALE | re.VERBOSE)
 
+
 def inline_markup(start, end=None, mapping=None):
     if end is None:
         end = start
     return compile_regex(r'''(START  %(start)s  ALPHA  %(end)s  END) |
            (START  %(start)s  ALPHA  WORD*  ALPHA  %(end)s  END)'''\
                          % {'start': start, 'end': end}, mapping)
+
 
 def line_markup(start, end=None):
     return inline_markup(start, end, mapping={'ALPHA': r'[-.,?!\s\w]',
@@ -51,40 +55,40 @@ def line_markup(start, end=None):
 supported_formats = {
     # reST refrence: http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html
     'reST': [
-        inline_markup(r'\*'), # emphasis
-        inline_markup(r'\*\*'), # strong
-        inline_markup(r'``'), # inline
-        inline_markup(r'\(', r'_\)', # hyperlink
+        inline_markup(r'\*'),  # emphasis
+        inline_markup(r'\*\*'),  # strong
+        inline_markup(r'``'),  # inline
+        inline_markup(r'\(', r'_\)',  # hyperlink
                       {'ALPHA': r'\w', 'WORD': r'[-.\w]'}),
-        inline_markup(r'\(`', r'`_\)'), # long hyperlink
-        line_markup(r':'), # field
-        line_markup(r'[*+-]', r''), # unordered list
-        line_markup(r'((\d+) | ([a-zA-Z]+) [.\)])', r''), # ordered list
-        line_markup(r'\(  ((\d+)  |  ([a-zA-Z]+))  \)', r''), # ordered list
+        inline_markup(r'\(`', r'`_\)'),  # long hyperlink
+        line_markup(r':'),  # field
+        line_markup(r'[*+-]', r''),  # unordered list
+        line_markup(r'((\d+) | ([a-zA-Z]+) [.\)])', r''),  # ordered list
+        line_markup(r'\(  ((\d+)  |  ([a-zA-Z]+))  \)', r''),  # ordered list
     ],
 
     # epytext reference: http://epydoc.sourceforge.net/epytext.html
     'epytext': [
-        re.compile(r'[BCEGILMSUX]\{.*\}'), # inline elements
-        line_markup(r'@[a-z]+([\ \t][a-zA-Z]+)?:', r''), # fields
-        line_markup(r'-', r''), # unordered list
-        line_markup(r'\d+(\.\d+)*', r''), # ordered list
+        re.compile(r'[BCEGILMSUX]\{.*\}'),  # inline elements
+        line_markup(r'@[a-z]+([\ \t][a-zA-Z]+)?:', r''),  # fields
+        line_markup(r'-', r''),  # unordered list
+        line_markup(r'\d+(\.\d+)*', r''),  # ordered list
     ],
 
     # javadoc reference: http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html
     'javadoc': [
-        re.compile(r'<[a-zA-z]+[^>]*>'), # HTML elements
-        line_markup(r'@[a-z][a-zA-Z]*\s', r''), # normal tags
+        re.compile(r'<[a-zA-z]+[^>]*>'),  # HTML elements
+        line_markup(r'@[a-z][a-zA-Z]*\s', r''),  # normal tags
         re.compile(r'{@  ((docRoot) | (inheritDoc) | (link) | (linkplain) |'\
                     ' (value))  [^}]*  }', re.VERBOSE), # special tags
     ],
 
     # sphinx reference: http://sphinx.pocoo.org/rest.html
     'sphinx': [
-        inline_markup(r'``'), # inline
-        re.compile(r':param [a-zA-Z_]+:'), # param
-        re.compile(r':[a-z]+:'), # class, module, function references
-        re.compile(r'\.\. [a-z]+::'), # directives
+        inline_markup(r'``'),  # inline
+        re.compile(r':param [a-zA-Z_]+:'),  # param
+        re.compile(r':[a-z]+:'),  # class, module, function references
+        re.compile(r'\.\. [a-z]+::'),  # directives
     ],
 }
 
@@ -126,7 +130,7 @@ class CodeParser(object):
         self.methods = []
         self.method_func = []
         self.functions = []
-        self.docstrings = [] # objects that have docstrings
+        self.docstrings = []  # objects that have docstrings
         self.docstrings_by_format = {}
         self.formatted_docstrings_count = 0
         self.doctests_count = 0
@@ -183,7 +187,7 @@ class CodeParser(object):
                     break
             if not method_found:
                 self.functions.append(method_or_func)
-                
+
         self.log("modules: " + ",".join(self.modules))
         self.log("classes: " + ",".join(self.classes))
         self.log("methods: " + ",".join(self.methods))

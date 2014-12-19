@@ -21,22 +21,22 @@ INVALID_PACKAGE_PATH = os.path.join(DATA_PATH, 'invalid_package.tar.gz')
 
 class FunctionalTest(object):
     def _run_cheesecake(self, arguments):
-        self.stdout_fd, self.stdout_name = tempfile.mkstemp(prefix='functional') 
+        self.stdout_fd, self.stdout_name = tempfile.mkstemp(prefix='functional')
         self.stderr_fd, self.stderr_name = tempfile.mkstemp(prefix='functional')
         self.process = subprocess.Popen('%s %s' % (CHEESECAKE_PATH, arguments),
-                         stdout=self.stdout_fd,
-                         stderr=self.stderr_fd,
-                         shell=True)
+                                        stdout=self.stdout_fd,
+                                        stderr=self.stderr_fd,
+                                        shell=True)
         self.return_code = self.process.wait()
 
     def _assert_success(self):
         # Check that Cheesecake exited sucessfully.
-        print "Return code: %d" % self.return_code
+        print("Return code: %d" % self.return_code)
         assert self.return_code == 0
 
         # Check that Cheesecake didn't wrote anything into stderr.
         stderr_contents = read_file_contents(self.stderr_name)
-        print "Stderr contents:\n***\n%s\n***\n" % stderr_contents
+        print("Stderr contents:\n***\n%s\n***\n" % stderr_contents)
         assert stderr_contents == ''
 
     def _cleanup(self):

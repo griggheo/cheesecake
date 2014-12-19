@@ -30,7 +30,7 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 
+
 
 import re
 import sys
@@ -91,4 +91,4 @@ def cover2html(text):
 
 
 if __name__ == '__main__':
-    print cover2html(sys.stdin.read())
+    print(cover2html(sys.stdin.read()))

@@ -11,7 +11,8 @@ from cheesecake.util import pad_msg
 
 class TestScore(FunctionalTest):
     def test_required_files(self):
-        self._run_cheesecake('-p %s' % os.path.join(DATA_PATH, 'required.tar.gz'))
+        self._run_cheesecake('-p %s' % os.path.join(DATA_PATH,
+                                                    'required.tar.gz'))
 
         self._assert_success()
 
@@ -28,7 +29,8 @@ class TestScore(FunctionalTest):
         documentation_regex = r'DOCUMENTATION INDEX \(RELATIVE\) \.\.\.\.\.\.\.\.\.\s+(\d+)\s+\((\d+) out of a maximum of (\d+) points is (\d+)%\)'
         code_kwalitee_regex = r'CODE KWALITEE INDEX \(RELATIVE\) \.\.\.\.\.\.\.\.\.\s+(-*\d+)\s+\((-*\d+) out of a maximum of (\d+) points is (-*\d+)%\)'
 
-        self._run_cheesecake('-p %s' % os.path.join(DATA_PATH, 'required.tar.gz'))
+        self._run_cheesecake('-p %s' % os.path.join(DATA_PATH,
+                                                    'required.tar.gz'))
 
         self._assert_success()
 
@@ -50,11 +52,11 @@ class TestScore(FunctionalTest):
             assert percent_one == percent_two
             overall_score += int(current)
             overall_maximum += int(maximum)
-            print "Score: %d/%d" % (int(current), int(maximum))
+            print("Score: %d/%d" % (int(current), int(maximum)))
 
         overall_percent = ceil(overall_score / float(overall_maximum))
 
-        print "Computed overall score: %d" % overall_score
+        print("Computed overall score: %d" % overall_score)
         assert 'OVERALL CHEESECAKE INDEX (ABSOLUTE) .... %3d' % overall_score in stdout
         assert 'OVERALL CHEESECAKE INDEX (RELATIVE) .... %3d  (%d out of a maximum of %d points is %d%%)' % \
                (overall_percent, overall_score, overall_maximum, overall_percent)

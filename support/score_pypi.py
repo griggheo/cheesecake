@@ -34,6 +34,7 @@ def read_file_contents(filename):
 
     return contents
 
+
 def replace_chars(string):
     replacements = {'%20': '_',
                     '%27': "\\'",
@@ -43,12 +44,13 @@ def replace_chars(string):
                     '%3A': ':',
                     '%3F': '\\?',
                     '%C3%B1': 'ñ',
-    }
+                    }
 
     for From, To in replacements.iteritems():
         string = string.replace(From, To)
 
     return string
+
 
 def get_package_names():
     """Get list of all packages on PyPI.
@@ -64,8 +66,10 @@ def get_package_names():
     for line in html_lines:
         m = re.search(package_regex, line)
         if m:
-            # To make setuptools download a package, convert all spaces to undescores.
+            # To make setuptools download a package, convert all spaces to
+            # undescores.
             yield (replace_chars(m.group(1)), replace_chars(m.group(2)))
+
 
 def score_one_package(package_name, log_template):
     """Score one package leaving information in logs along the way.
@@ -80,11 +84,11 @@ def score_one_package(package_name, log_template):
     stdout_fd = file(log_template % 'stdout', 'w')
     stderr_fd = file(log_template % 'stderr', 'w')
 
-    process = subprocess.Popen('%s -l %s -n %s' % \
+    process = subprocess.Popen('%s -l %s -n %s' %
                                (CHEESECAKE_PATH, log_file, package_name),
-                         stdout=stdout_fd,
-                         stderr=stderr_fd,
-                         shell=True)
+                               stdout=stdout_fd,
+                               stderr=stderr_fd,
+                               shell=True)
 
     result = process.wait()
 
@@ -100,13 +104,16 @@ def score_one_package(package_name, log_template):
 
     return -1
 
+
 def time2datetime(t):
     t = time.localtime(t)
     return datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday,
                              t.tm_hour, t.tm_min, t.tm_sec)
 
+
 def time_delta(start, end):
     return str(time2datetime(end) - time2datetime(start))
+
 
 def score_all_packages():
     packages_failed = []
@@ -124,27 +131,30 @@ def score_all_packages():
         if result == -1:
             packages_failed.append(name_and_version)
         else:
-            packages_scores.append((name_and_version, result, time_delta(start, end)))
+            packages_scores.append((name_and_version,
+                                    result,
+                                    time_delta(start, end)))
 
-    print "=== Packages that Cheesecake failed to score ==="
+    print("=== Packages that Cheesecake failed to score ===")
     for failed in packages_failed:
-        print failed
+        print(failed)
 
-    print
-    print "=== All packages scores ==="
+    print("")
+    print("=== All packages scores ===")
     # Sorty by score.
-    packages_scores.sort(lambda x,y: cmp(x[1], y[1]))
+    packages_scores.sort(lambda x, y: cmp(x[1], y[1]))
 
     for name, score, timing in packages_scores:
-        print "%s SCORE:%s (in %s time)" % (name, score, timing)
+        print("%s SCORE:%s (in %s time)" % (name, score, timing))
 
-    print
-    print "=== Summary ==="
-    print "Checked %d packages in overall." % (len(packages_scores) + len(packages_failed))
-    print "Failed for %d." % len(packages_failed)
-    print "%d packages got more than 50%% Cheesecake score." % len(filter(lambda x: x[1] > 50, packages_scores))
+    print("")
+    print("=== Summary ===")
+    print("Checked %d packages in overall." %
+          (len(packages_scores) + len(packages_failed)))
+    print("Failed for %d." % len(packages_failed))
+    print("%d packages got more than 50%% Cheesecake score." %
+          len(filter(lambda x: x[1] > 50, packages_scores)))
 
 
 if __name__ == '__main__':
     score_all_packages()
-

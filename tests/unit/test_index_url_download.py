@@ -66,7 +66,7 @@ class TestIndexInstallability(object):
                                              sandbox=default_temp_directory, logfile=logfile)
                 assert False, "Should throw a CheesecakeError."
             except CheesecakeError, e:
-                print str(e)
+                print(str(e))
                 msg = "Error: [Errno socket error] (111, 'Connection refused')\n"
                 msg += "Detailed info available in log file %s" % logfile
                 assert str(e) == msg

@@ -149,9 +149,9 @@ def trailing_whitespace(physical_line):
     """
     JCR: Trailing whitespace is superfluous.
     """
-    physical_line = physical_line.rstrip('\n') # chr(10), newline
-    physical_line = physical_line.rstrip('\r') # chr(13), carriage return
-    physical_line = physical_line.rstrip('\x0c') # chr(12), form feed, ^L
+    physical_line = physical_line.rstrip('\n')  # chr(10), newline
+    physical_line = physical_line.rstrip('\r')  # chr(13), carriage return
+    physical_line = physical_line.rstrip('\x0c')  # chr(12), form feed, ^L
     stripped = physical_line.rstrip()
     if physical_line != stripped:
         return len(stripped), "W291 trailing whitespace"
@@ -306,7 +306,7 @@ def python_3000_has_key(logical_line):
     Python. Use the 'in' operation instead, like:
     d = {"a": 1, "b": 2}
     if "b" in d:
-        print d["b"]
+        print(d["b"])
     """
     pos = logical_line.find('.has_key(')
     if pos > -1:
@@ -367,9 +367,9 @@ def expand_indent(line):
 
 def message(text):
     """Print a message."""
-    # print >> sys.stderr, options.prog + ': ' + text
-    # print >> sys.stderr, text
-    print text
+    # print(>> sys.stderr, options.prog + ': ' + text)
+    # print(>> sys.stderr, text)
+    print(text)
 
 
 def find_checks(argument_name):
@@ -483,11 +483,11 @@ class Checker:
             if previous:
                 end_line, end = previous[3]
                 start_line, start = token[2]
-                if end_line != start_line: # different row
+                if end_line != start_line:  # different row
                     if self.lines[end_line - 1][end - 1] not in '{[(':
                         logical.append(' ')
                         length += 1
-                elif end != start: # different column
+                elif end != start:  # different column
                     fill = self.lines[end_line - 1][end:start]
                     logical.append(fill)
                     length += len(fill)
@@ -508,10 +508,10 @@ class Checker:
         indent = first_line[:self.mapping[0][1][2][1]]
         self.indent_level = expand_indent(indent)
         if options.verbose >= 2:
-            print self.logical_line[:80].rstrip()
+            print(self.logical_line[:80].rstrip())
         for name, check, argument_names in self.logical_checks:
             if options.verbose >= 3:
-                print '   ', name
+                print('   ', name)
             result = self.run_check(check, argument_names)
             if result is not None:
                 offset, text = result
@@ -680,21 +680,21 @@ def get_statistics(prefix=''):
 def print_statistics(prefix=''):
     """Print overall statistics (number of errors and warnings)."""
     for line in get_statistics(prefix):
-        print line
+        print(line)
 
 
 def print_benchmark(elapsed):
     """
     Print benchmark numbers.
     """
-    print '%-7.2f %s' % (elapsed, 'seconds elapsed')
+    print('%-7.2f %s' % (elapsed, 'seconds elapsed'))
     keys = ['directories', 'files',
             'logical lines', 'physical lines']
     for key in keys:
         if key in options.counters:
-            print '%-7d %s per second (%d total)' % (
-                options.counters[key] / elapsed, key,
-                options.counters[key])
+            print('%-7d %s per second (%d total)' % (
+                  options.counters[key] / elapsed, key,
+                  options.counters[key]))
 
 
 def process_options(arglist=None):
@@ -747,6 +747,7 @@ def process_options(arglist=None):
     options.messages = {}
 
     return options, args
+
 
 def _main():
     """

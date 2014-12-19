@@ -60,5 +60,6 @@ class TestUnitTestsIndex(object):
 
         index.compute_with(CheesecakeMockup())
 
-        print "Index: %d/%d -- %s" % (index.value, index.max_value, index.details)
+        print("Index: %d/%d -- %s" %
+              (index.value, index.max_value, index.details))
         assert index.value == int(ceil(index.max_value * 2.0/4.0))
