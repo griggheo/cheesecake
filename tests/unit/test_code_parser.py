@@ -86,7 +86,7 @@ class TestCodeParser(object):
             "module1.func8", # intentional overlap with epytext
         ]
 
-        print self.code1.docstrings
+        print(self.code1.docstrings)
 
         assert set(objects_with_docstrings) == set(self.code1.docstrings)
         assert set(objects_with_rest_docstrings) == set(self.code1.docstrings_by_format['reST'])
@@ -97,11 +97,11 @@ class TestCodeParser(object):
 class TestDocumentationFormats(object):
     def _do_it(self, format, valid, invalid):
         for test in valid:
-            print "Trying '%s'" % test
+            print("Trying '%s'" % test)
             assert use_format(test, format) is True
 
         for test in invalid:
-            print "Trying '%s'" % test
+            print("Trying '%s'" % test)
             assert use_format(test, format) is False
 
     def test_reST(self):

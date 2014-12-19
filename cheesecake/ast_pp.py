@@ -1,9 +1,7 @@
 # this is stolen from exarkun's sandbox
-import sys
-
 from StringIO import StringIO
-from pprint import pprint
 from compiler import parse, walk
+
 
 class SourceWriter(object):
     _i = 0
@@ -317,10 +315,12 @@ class SourceWriter(object):
     def __str__(self):
         return self.s.getvalue()
 
+
 def pp(ast):
     sw = SourceWriter()
     walk(ast, sw)
     return sw.s.getvalue()
+
 
 def magic(s):
     ast = parse(s)
@@ -331,5 +331,5 @@ def magic(s):
 if __name__ == '__main__':
     f = file(__file__, 'r').read()
     ast, sw = magic(f)
-    print sw
-    print ast
+    print(sw)
+    print(ast)

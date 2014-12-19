@@ -6,4 +6,4 @@ __revision__ = 'satisfy pylint checker'
 
 import import_self
 
-print import_self.__revision__ # use imported module
+print(import_self.__revision__)  # use imported module

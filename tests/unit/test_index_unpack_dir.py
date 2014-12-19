@@ -14,6 +14,7 @@ class IndexUnpackDirTest(object):
             return
         self.cheesecake.cleanup()
 
+
 class TestIndexUnpackDirCorrectPackage(IndexUnpackDirTest):
     def test_index_unpack_dir_correct_package(self):
         self.cheesecake = Cheesecake(path=os.path.join(DATA_PATH, "package1.tar.gz"))
@@ -25,6 +26,7 @@ class TestIndexUnpackDirCorrectPackage(IndexUnpackDirTest):
         assert index.value == IndexUnpackDir.max_value
         assert index.details == "unpack directory is " + self.cheesecake.package_name + " as expected"
 
+
 class TestIndexUnpackDirCorrectPackage(IndexUnpackDirTest):
     def test_index_unpack_dir_incorrect_package(self):
         self.cheesecake = Cheesecake(path=os.path.join(DATA_PATH, "package_renamed.tar.gz"))
@@ -33,6 +35,6 @@ class TestIndexUnpackDirCorrectPackage(IndexUnpackDirTest):
         index.compute_with(self.cheesecake)
 
         assert index.name == "IndexUnpackDir"
-        print index.value, index.max_value
+        print(index.value, index.max_value)
         assert index.value == 0
         assert index.details == "unpack directory is package1 instead of the expected package_renamed"

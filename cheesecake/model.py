@@ -2,7 +2,8 @@
 Code borrowed from Michael Hudson's docextractor package with the author's
 permission.
 
-The original code is available at http://codespeak.net/svn/user/mwh/docextractor/.
+The original code is available at
+http://codespeak.net/svn/user/mwh/docextractor/.
 
 Changes:
   * do not print warnings to stdout (in System.warning)
@@ -44,9 +45,10 @@ def get_call_name(node):
 
     return get_name(node.node)
 
+
 def get_function_calls(node, fc):
     if not isinstance(node, ast.Node):
-        return 
+        return
 
     for child in node.getChildren():
         if isinstance(child, ast.CallFunc):
@@ -65,12 +67,15 @@ class Documentable(object):
         self.docstring = docstring
         self.parent = parent
         self.setup()
+
     def setup(self):
         self.contents = {}
         self.orderedcontents = []
         self._name2fullname = {}
+
     def fullName(self):
         return self.prefix + self.name
+
     def shortdocstring(self):
         docstring = self.docstring
         if docstring:
@@ -78,8 +83,10 @@ class Documentable(object):
             if len(docstring) > 20:
                 docstring = docstring[:8] + '...' + docstring[-8:]
         return docstring
+
     def __repr__(self):
-        return "%s %r"%(self.__class__.__name__, self.fullName())
+        return "%s %r" % (self.__class__.__name__, self.fullName())
+
     def name2fullname(self, name):
         if name in self._name2fullname:
             return self._name2fullname[name]
@@ -102,8 +109,8 @@ class Documentable(object):
                         break
                 else:
                     if verbose:
-                        print "1 didn't find %r from %r"%(dottedname,
-                                                      self.fullName())
+                        print("1 didn't find %r from %r" %
+                              (dottedname, self.fullName()))
                     return None
                 break
         else:
@@ -112,18 +119,18 @@ class Documentable(object):
                 obj = system.allobjects[fn]
             else:
                 if verbose:
-                    print "1.5 didn't find %r from %r"%(dottedname,
-                                                        self.fullName())
+                    print("1.5 didn't find %r from %r" %
+                          (dottedname, self.fullName()))
                 return None
         for p in parts[1:]:
             if p not in obj.contents:
                 if verbose:
-                    print "2 didn't find %r from %r"%(dottedname,
-                                                      self.fullName())
+                    print("2 didn't find %r from %r" %
+                          (dottedname, self.fullName()))
                 return None
             obj = obj.contents[p]
         if verbose:
-            print dottedname, '->', obj.fullName(), 'in', self.fullName()
+            print(dottedname, '->', obj.fullName(), 'in', self.fullName())
         return obj
 
     def dottedNameToFullName(self, dottedname):
@@ -173,14 +180,17 @@ class Documentable(object):
                 r[k] = v
         return r
 
+
 class Package(Documentable):
     kind = "Package"
+
     def name2fullname(self, name):
         raise NameError
 
 
 class Module(Documentable):
     kind = "Module"
+
     def name2fullname(self, name):
         if name in self._name2fullname:
             return self._name2fullname[name]
@@ -193,6 +203,7 @@ class Module(Documentable):
 
 class Class(Documentable):
     kind = "Class"
+
     def setup(self):
         super(Class, self).setup()
         self.bases = []
@@ -317,8 +328,8 @@ class ModuleVistor(object):
             except (KeyboardInterrupt, SystemExit):
                 raise
             except Exception, e:
-                self.system.warning("unparseable default", "%s: %s %r"%(e.__class__.__name__,
-                                                                       e, default))
+                self.system.warning("unparseable default", "%s: %s %r" %
+                                    (e.__class__.__name__, e, default))
                 defaults.append('???')
         # argh, convert unpacked-arguments from tuples to lists,
         # because that's what getargspec uses and the unit test
@@ -381,7 +392,7 @@ class System(object):
         self.current = obj
         self.orderedallobjects.append(obj)
         fullName = obj.fullName()
-        #print 'push', cls.__name__, fullName
+        #print('push', cls.__name__, fullName)
         if fullName in self.allobjects:
             obj = self.handleDuplicate(obj)
         else:
@@ -413,13 +424,12 @@ class System(object):
         self.allobjects[obj.fullName()] = obj
         return obj
 
-
     def _pop(self, cls):
         assert isinstance(self.current, cls)
 ##         if self.current.parent:
-##             print 'pop', self.current.fullName(), '->', self.current.parent.fullName()
+##             print('pop', self.current.fullName(), '->', self.current.parent.fullName())
 ##         else:
-##             print 'pop', self.current.fullName(), '->', self.current.parent
+##             print('pop', self.current.fullName(), '->', self.current.parent)
         self.current = self.current.parent
 
     def push(self, obj, node=None):
@@ -427,27 +437,31 @@ class System(object):
         self.current = obj
 
     def pop(self, obj):
-        assert self.current is obj, "%r is not %r"%(self.current, obj)
+        assert self.current is obj, "%r is not %r" % (self.current, obj)
         self.current = self._stack.pop()
 
     def pushClass(self, name, docstring):
         return self._push(self.Class, name, docstring)
+
     def popClass(self):
         self._pop(self.Class)
 
     def pushModule(self, name, docstring):
         return self._push(self.Module, name, docstring)
+
     def popModule(self):
         self._pop(self.Module)
 
     def pushFunction(self, name, docstring, func_called):
         self.func_called.update(func_called)
         return self._push(self.Function, name, docstring)
+
     def popFunction(self):
         self._pop(self.Function)
 
     def pushPackage(self, name, docstring):
         return self._push(self.Package, name, docstring)
+
     def popPackage(self):
         self._pop(self.Package)
 
@@ -456,7 +470,7 @@ class System(object):
             self._report(o, '')
 
     def _report(self, o, indent):
-        print indent, o
+        print(indent, o)
         for o2 in o.orderedcontents:
             self._report(o2, indent+'  ')
 
@@ -559,6 +573,7 @@ def expandModname(system, modname, givewarning=True):
     else:
         return prefix + suffix
 
+
 class ImportStarFinder(object):
     def __init__(self, system, modfullname):
         self.system = system
@@ -569,6 +584,7 @@ class ImportStarFinder(object):
             modname = expandModname(self.system, node.modname, False)
             self.system.importstargraph.setdefault(
                 self.modfullname, []).append(modname)
+
 
 def processModuleAst(ast, name, system):
     mv = system.ModuleVistor(system, name)
@@ -611,6 +627,7 @@ def preprocessDirectory(system, dirpath):
         system.popPackage()
     system.state = 'preparse'
 
+
 def findImportStars(system):
     assert system.state in ['preparse']
     modlist = list(system.objectsOfType(Module))
@@ -624,6 +641,7 @@ def findImportStars(system):
         walk(ast, isf)
         system.pop(mod.parent)
     system.state = 'importstarred'
+
 
 def extractDocstrings(system):
     assert system.state in ['preparse', 'importstarred']
@@ -643,10 +661,12 @@ def extractDocstrings(system):
         system.pop(mod.parent)
     system.state = 'parsed'
 
+
 def finalStateComputations(system):
     assert system.state in ['parsed']
     system.finalStateComputations()
     system.state = 'finalized'
+
 
 def processDirectory(system, dirpath):
     preprocessDirectory(system, dirpath)
@@ -654,10 +674,12 @@ def processDirectory(system, dirpath):
     extractDocstrings(system)
     finalStateComputations(system)
 
+
 def toposort(input, edges):
     # this doesn't detect cycles in any clever way.
     output = []
     input = dict.fromkeys(input)
+
     def p(i):
         for j in edges.get(i, []):
             if j in input:
@@ -677,16 +699,15 @@ def main(systemcls, argv):
         processDirectory(system, argv[0])
         pickle.dump(system, open('da.out', 'wb'), pickle.HIGHEST_PROTOCOL)
         print
-        print 'warning summary:'
+        print('warning summary:')
         for k, v in system.warnings.iteritems():
-            print k, len(v)
+            print(k, len(v))
     else:
         system = systemcls()
         for fname in argv:
-            modname = os.path.splitext(os.path.basename(fname))[0] # XXX!
+            modname = os.path.splitext(os.path.basename(fname))[0]  # XXX!
             processModuleAst(parseFile(fname), modname, system)
         system.report()
-
 
 
 if __name__ == '__main__':

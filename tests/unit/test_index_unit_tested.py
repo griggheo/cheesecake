@@ -24,7 +24,7 @@ main_contents = """
 class SomeClass(object):
     '''This is a docstring with doctests.
 
-    >>> print "Hello"
+    >>> print("Hello")
     Hello
     '''
     def method(self):
@@ -103,8 +103,10 @@ class TestIndexUnitTested(object):
         index = IndexUnitTested()
         index.compute_with(cheesecake)
 
-        # Unit tests presence should be discovered and package should get maximum score.
-        print "Index: %d/%d -- %s" % (index.value, index.max_value, index.details)
+        # Unit tests presence should be discovered and package should get
+        # maximum score.
+        print("Index: %d/%d -- %s" %
+              (index.value, index.max_value, index.details))
         assert index.value == index.max_value
 
     def test_special_filenames_1(self):
