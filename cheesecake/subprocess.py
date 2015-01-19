@@ -252,11 +252,11 @@ A more real-world example would look like this:
 try:
     retcode = call("mycmd" + " myarg", shell=True)
     if retcode < 0:
-        print(>>sys.stderr, "Child was terminated by signal", -retcode)
+        print("Child was terminated by signal %i" % retcode, file=sys.stderr)
     else:
-        print(>>sys.stderr, "Child returned", retcode)
+        print("Child returned %i" % retcode, file=sys.stderr)
 except OSError, e:
-    print(>>sys.stderr, "Execution failed:", e)
+    print("Execution failed: %s" % str(e), file=sys.stderr)
 
 
 Replacing os.spawn*
@@ -356,6 +356,7 @@ except that:
 
 """
 
+from __future__ import print_function
 import sys
 mswindows = (sys.platform == "win32")
 
@@ -1124,7 +1125,7 @@ def _demo_posix():
         else:
             print("Error", e.errno)
     else:
-        print(>>sys.stderr, "Gosh.  No error.")
+        print("Gosh.  No error.", file=sys.stderr)
 
 
 def _demo_windows():

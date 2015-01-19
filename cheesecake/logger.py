@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import re
 
@@ -95,7 +96,7 @@ class File(object):
         self._file = f
 
     def __call__(self, msg):
-        print(>>self._file, str(msg))
+        print(str(msg), file=self._file)
 
 
 class Path(File):
@@ -106,11 +107,11 @@ class Path(File):
 
 
 def STDOUT(msg):
-    print(>>sys.stdout, str(msg))
+    print(str(msg), file=sys.stdout)
 
 
 def STDERR(msg):
-    print(>>sys.stderr, str(msg))
+    print(str(msg), file=sys.stderr)
 
 
 def setconsumer(keywords, consumer):
