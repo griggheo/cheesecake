@@ -18,7 +18,7 @@ import shutil
 import sys
 import tempfile
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 from urllib import urlretrieve
 from urlparse import urlparse
 from math import ceil
@@ -1958,103 +1958,109 @@ class Cheesecake(object):
 ###############################################################################
 
 def process_cmdline_args():
-    """Parse command-line options.
+    """Parse command-line arguments.
     """
-    parser = OptionParser()
+    parser = ArgumentParser()
 
-    # Options for package retrieval.
-    parser.add_option("-n", "--name",
-                      dest="name",
-                      default="",
-                      help=("package name (will be retrieved via "
-                            "setuptools utilities, if present)"))
-    parser.add_option("-p", "--path",
-                      dest="path",
-                      default="",
-                      help="path of tar.gz/zip package on local file system")
-    parser.add_option("-u", "--url",
-                      dest="url",
-                      default="",
-                      help="package URL")
+    # Arguments for package retrieval.
+    parser.add_argument("-n", "--name",
+                        dest="name",
+                        default="",
+                        help=("package name (will be retrieved via "
+                              "setuptools utilities, if present)"))
+    parser.add_argument("-p", "--path",
+                        dest="path",
+                        default="",
+                        help="path of tar.gz/zip package on local file system")
+    parser.add_argument("-u", "--url",
+                        dest="url",
+                        default="",
+                        help="package URL")
 
-    # Output formatting options.
-    parser.add_option("-q", "--quiet",
-                      action="store_true",
-                      dest="quiet",
-                      default=False,
-                      help=("only print Cheesecake index value "
-                            "(default=False)"))
-    parser.add_option("-v", "--verbose",
-                      action="store_true",
-                      dest="verbose",
-                      default=False,
-                      help="verbose output (default=False)")
+    # Output formatting arguments.
+    parser.add_argument("-q", "--quiet",
+                        action="store_true",
+                        dest="quiet",
+                        default=False,
+                        help=("only print Cheesecake index value "
+                              "(default=False)"))
+    parser.add_argument("-v", "--verbose",
+                        action="store_true",
+                        dest="verbose",
+                        default=False,
+                        help="verbose output (default=False)")
 
-    # Index choice options.
-    parser.add_option("--lite",
-                      action="store_true",
-                      dest="lite",
-                      default=False,
-                      help="don't run time-consuming tests (default=False)")
-    parser.add_option("-t", "--static",
-                      action="store_true",
-                      dest="static",
-                      default=False,
-                      help=("don't run any code from the package being "
-                            "tested (default=False)"))
-    parser.add_option("--with-pep8",
-                      action="store_true",
-                      dest="with_pep8",
-                      default=False,
-                      help="check pep8 conformance")
+    # Index choice arguments.
+    parser.add_argument("--lite",
+                        action="store_true",
+                        dest="lite",
+                        default=False,
+                        help="don't run time-consuming tests (default=False)")
+    parser.add_argument("-t", "--static",
+                        action="store_true",
+                        dest="static",
+                        default=False,
+                        help=("don't run any code from the package being "
+                              "tested (default=False)"))
+    parser.add_argument("--with-pep8",
+                        action="store_true",
+                        dest="with_pep8",
+                        default=False,
+                        help="check pep8 conformance")
 
-    # Other options.
-    parser.add_option("-l", "--logfile",
-                      dest="logfile",
-                      default=None,
-                      help="file to log all cheesecake messages")
-    parser.add_option("-s", "--sandbox",
-                      dest="sandbox",
-                      default=None,
-                      help=("directory where package will be unpacked "
-                            "(default is to use random directory inside %s)") %
-                           tempfile.gettempdir())
-    parser.add_option("--keep-log",
-                      action="store_true",
-                      dest="keep_log",
-                      default=False,
-                      help="don't remove log file even if run was successful")
-    parser.add_option("--pylint-max-execution-time",
-                      action="store",
-                      dest="pylint_max_execution_time",
-                      default=120,
-                      help=("maximum time (in seconds) you allow pylint "
-                            "process to run (default=120)"))
+    # Other arguments.
+    parser.add_argument("-l", "--logfile",
+                        dest="logfile",
+                        default=None,
+                        help="file to log all cheesecake messages")
+    parser.add_argument("-s", "--sandbox",
+                        dest="sandbox",
+                        default=None,
+                        help=("directory where package will be unpacked "
+                              "(default is to use random directory "
+                              "inside %s)") %
+                             tempfile.gettempdir())
+    parser.add_argument("--keep-log",
+                        action="store_true",
+                        dest="keep_log",
+                        default=False,
+                        help=("don't remove log file even if run was "
+                              "successful"))
+    parser.add_argument("--pylint-max-execution-time",
+                        action="store",
+                        dest="pylint_max_execution_time",
+                        default=120,
+                        help=("maximum time (in seconds) you allow pylint "
+                              "process to run (default=120)"))
 
-    parser.add_option("-V", "--version", action="store_true", dest="version",
-                      default=False, help="Output cheesecake version and exit")
+    parser.add_argument("-V", "--version",
+                        action="store_true",
+                        dest="version",
+                        default=False,
+                        help="Output cheesecake version and exit")
 
-    (options, args) = parser.parse_args()
-    return options
+    arguments = parser.parse_args()
+    return arguments
 
 
 def main():
-    """Display Cheesecake index for package specified via command-line options.
+    """Display Cheesecake index for package specified via command-line
+       arguments.
     """
-    options = process_cmdline_args()
-    keep_log = options.keep_log
-    lite = options.lite
-    logfile = options.logfile
-    name = options.name
-    path = options.path
-    quiet = options.quiet
-    sandbox = options.sandbox
-    static_only = options.static
-    url = options.url
-    verbose = options.verbose
-    version = options.version
-    with_pep8 = options.with_pep8
-    pylint_max_execution_time = int(options.pylint_max_execution_time)
+    arguments = process_cmdline_args()
+    keep_log = arguments.keep_log
+    lite = arguments.lite
+    logfile = arguments.logfile
+    name = arguments.name
+    path = arguments.path
+    quiet = arguments.quiet
+    sandbox = arguments.sandbox
+    static_only = arguments.static
+    url = arguments.url
+    verbose = arguments.verbose
+    version = arguments.version
+    with_pep8 = arguments.with_pep8
+    pylint_max_execution_time = int(arguments.pylint_max_execution_time)
 
     if version:
         print("Cheesecake version %s (rev. %s)" % (VERSION, __revision__))

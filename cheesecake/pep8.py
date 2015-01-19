@@ -26,7 +26,7 @@
 Check Python source code formatting, according to PEP 8:
 http://www.python.org/dev/peps/pep-0008/
 
-For usage and a list of options, try this:
+For usage and a list of arguments, try this:
 $ python pep8.py -h
 
 This program and its regression test suite live here:
@@ -77,13 +77,14 @@ text from PEP 8. It is printed if the user enables --show-pep8.
 
 """
 
+from __future__ import print_function
 import os
 import sys
 import re
 import time
 import inspect
 import tokenize
-from optparse import OptionParser
+from argparse import ArgumentParser
 from keyword import iskeyword
 from fnmatch import fnmatch
 
@@ -102,7 +103,7 @@ operators = """
 in is or not and
 """.split()
 
-options = None
+arguments = None
 args = None
 
 
@@ -118,9 +119,9 @@ def tabs_or_spaces(physical_line, state):
     The most popular way of indenting Python is with spaces only.  The
     second-most popular way is with tabs only.  Code indented with a mixture
     of tabs and spaces should be converted to using spaces exclusively.  When
-    invoking the Python command line interpreter with the -t option, it issues
+    invoking the Python command line interpreter with the -t argument, it issues
     warnings about code that illegally mixes tabs and spaces.  When using -tt
-    these warnings become errors.  These options are highly recommended!
+    these warnings become errors.  These arguments are highly recommended!
     """
     indent = indent_match(physical_line).group(1)
     if not indent:
@@ -367,8 +368,8 @@ def expand_indent(line):
 
 def message(text):
     """Print a message."""
-    # print(>> sys.stderr, options.prog + ': ' + text)
-    # print(>> sys.stderr, text)
+    # print(arguments.prog + ': ' + text, file=sys.stderr)
+    # print(text, file=sys.stderr)
     print(text)
 
 
@@ -423,8 +424,8 @@ class Checker:
         self.lines = file(filename).readlines()
         self.physical_checks = find_checks('physical_line')
         self.logical_checks = find_checks('logical_line')
-        options.counters['physical lines'] = \
-            options.counters.get('physical lines', 0) + len(self.lines)
+        arguments.counters['physical lines'] = \
+            arguments.counters.get('physical lines', 0) + len(self.lines)
 
     def readline(self):
         """
@@ -501,16 +502,16 @@ class Checker:
         """
         Build a line from tokens and run all logical checks on it.
         """
-        options.counters['logical lines'] = \
-            options.counters.get('logical lines', 0) + 1
+        arguments.counters['logical lines'] = \
+            arguments.counters.get('logical lines', 0) + 1
         self.build_tokens_line()
         first_line = self.lines[self.mapping[0][1][2][0] - 1]
         indent = first_line[:self.mapping[0][1][2][1]]
         self.indent_level = expand_indent(indent)
-        if options.verbose >= 2:
+        if arguments.verbose >= 2:
             print(self.logical_line[:80].rstrip())
         for name, check, argument_names in self.logical_checks:
-            if options.verbose >= 3:
+            if arguments.verbose >= 3:
                 print('   ', name)
             result = self.run_check(check, argument_names)
             if result is not None:
@@ -554,17 +555,17 @@ class Checker:
 
     def report_error(self, line_number, offset, text, check):
         """
-        Report an error, according to options.
+        Report an error, according to arguments.
         """
-        if options.quiet == 1 and not self.file_errors:
+        if arguments.quiet == 1 and not self.file_errors:
             message(self.filename)
         self.file_errors += 1
         code = text[:4]
-        options.counters[code] = options.counters.get(code, 0) + 1
-        options.messages[code] = text[5:]
-        if options.quiet:
+        arguments.counters[code] = arguments.counters.get(code, 0) + 1
+        arguments.messages[code] = text[5:]
+        if arguments.quiet:
             return
-        if options.testsuite:
+        if arguments.testsuite:
             base = os.path.basename(self.filename)[:4]
             if base == code:
                 return
@@ -572,14 +573,14 @@ class Checker:
                 return
         if ignore_code(code):
             return
-        if options.counters[code] == 1 or options.repeat:
+        if arguments.counters[code] == 1 or arguments.repeat:
             message("%s:%s:%d: %s" %
                     (self.filename, line_number, offset + 1, text))
-            if options.show_source:
+            if arguments.show_source:
                 line = self.lines[line_number - 1]
                 message(line.rstrip())
                 message(' ' * offset + '^')
-            if options.show_pep8:
+            if arguments.show_pep8:
                 message(check.__doc__.lstrip('\n').rstrip())
 
 
@@ -589,11 +590,11 @@ def input_file(filename):
     """
     if excluded(filename) or not filename_match(filename):
         return {}
-    if options.verbose:
+    if arguments.verbose:
         message('checking ' + filename)
-    options.counters['files'] = options.counters.get('files', 0) + 1
+    arguments.counters['files'] = arguments.counters.get('files', 0) + 1
     errors = Checker(filename).check_all()
-    if options.testsuite and not errors:
+    if arguments.testsuite and not errors:
         message("%s: %s" % (filename, "no errors found"))
 
 
@@ -605,10 +606,10 @@ def input_dir(dirname):
     if excluded(dirname):
         return
     for root, dirs, files in os.walk(dirname):
-        if options.verbose:
+        if arguments.verbose:
             message('directory ' + root)
-        options.counters['directories'] = \
-            options.counters.get('directories', 0) + 1
+        arguments.counters['directories'] = \
+            arguments.counters.get('directories', 0) + 1
         dirs.sort()
         for subdir in dirs:
             if excluded(subdir):
@@ -620,30 +621,30 @@ def input_dir(dirname):
 
 def excluded(filename):
     """
-    Check if options.exclude contains a pattern that matches filename.
+    Check if arguments.exclude contains a pattern that matches filename.
     """
-    for pattern in options.exclude:
+    for pattern in arguments.exclude:
         if fnmatch(filename, pattern):
             return True
 
 
 def filename_match(filename):
     """
-    Check if options.filename contains a pattern that matches filename.
-    If options.filename is unspecified, this always returns True.
+    Check if arguments.filename contains a pattern that matches filename.
+    If arguments.filename is unspecified, this always returns True.
     """
-    if not options.filename:
+    if not arguments.filename:
         return True
-    for pattern in options.filename:
+    for pattern in arguments.filename:
         if fnmatch(filename, pattern):
             return True
 
 
 def ignore_code(code):
     """
-    Check if options.ignore contains a prefix of the error code.
+    Check if arguments.ignore contains a prefix of the error code.
     """
-    for ignore in options.ignore:
+    for ignore in arguments.ignore:
         if code.startswith(ignore):
             return True
 
@@ -668,12 +669,12 @@ def get_statistics(prefix=''):
     prefix='E4' matches all errors that have to do with imports
     """
     stats = []
-    keys = options.messages.keys()
+    keys = arguments.messages.keys()
     keys.sort()
     for key in keys:
         if key.startswith(prefix):
             stats.append('%-7s %s %s' %
-                         (options.counters[key], key, options.messages[key]))
+                         (arguments.counters[key], key, arguments.messages[key]))
     return stats
 
 
@@ -691,70 +692,78 @@ def print_benchmark(elapsed):
     keys = ['directories', 'files',
             'logical lines', 'physical lines']
     for key in keys:
-        if key in options.counters:
+        if key in arguments.counters:
             print('%-7d %s per second (%d total)' % (
-                  options.counters[key] / elapsed, key,
-                  options.counters[key]))
+                  arguments.counters[key] / elapsed, key,
+                  arguments.counters[key]))
 
 
-def process_options(arglist=None):
+def process_arguments(arglist=None):
     """
-    Process options passed either via arglist or via command line args.
+    Process arguments passed either via optional arguments or positional
+    arguments.
     """
-    global options, args
-    usage = "%prog [options] input ..."
-    parser = OptionParser(usage)
-    parser.add_option('-v', '--verbose', default=0, action='count',
-                      help="print status messages, or debug with -vv")
-    parser.add_option('-q', '--quiet', default=0, action='count',
-                      help="report only file names, or nothing with -qq")
-    parser.add_option('--exclude', metavar='patterns', default=default_exclude,
-                      help="skip matches (default %s)" % default_exclude)
-    parser.add_option('--filename', metavar='patterns',
-                      help="only check matching files (e.g. *.py)")
-    parser.add_option('--ignore', metavar='errors', default='',
-                      help="skip errors and warnings (e.g. E4,W)")
-    parser.add_option('--repeat', action='store_true',
-                      help="show all occurrences of the same error")
-    parser.add_option('--show-source', action='store_true',
-                      help="show source code for each error")
-    parser.add_option('--show-pep8', action='store_true',
-                      help="show text of PEP 8 for each error")
-    parser.add_option('--statistics', action='store_true',
-                      help="count errors and warnings")
-    parser.add_option('--benchmark', action='store_true',
-                      help="measure processing speed")
-    parser.add_option('--testsuite', metavar='dir',
-                      help="run regression tests from dir")
-    parser.add_option('--doctest', action='store_true',
-                      help="run doctest on myself")
-    options, args = parser.parse_args(arglist)
-    if options.testsuite:
-        args.append(options.testsuite)
+    global arguments, args
+    usage = "%prog [arguments] input ..."
+    parser = ArgumentParser(usage)
+    parser.add_argument('-v', '--verbose', default=0, action='count',
+                        help="print status messages, or debug with -vv")
+    parser.add_argument('-q', '--quiet', default=0, action='count',
+                        help="report only file names, or nothing with -qq")
+    parser.add_argument('--exclude',
+                        metavar='patterns',
+                        default=default_exclude,
+                        help="skip matches (default %s)" % default_exclude)
+    parser.add_argument('--filename', metavar='patterns',
+                        help="only check matching files (e.g. *.py)")
+    parser.add_argument('--ignore', metavar='errors', default='',
+                        help="skip errors and warnings (e.g. E4,W)")
+    parser.add_argument('--repeat', action='store_true',
+                        help="show all occurrences of the same error")
+    parser.add_argument('--show-source', action='store_true',
+                        help="show source code for each error")
+    parser.add_argument('--show-pep8', action='store_true',
+                        help="show text of PEP 8 for each error")
+    parser.add_argument('--statistics', action='store_true',
+                        help="count errors and warnings")
+    parser.add_argument('--benchmark', action='store_true',
+                        help="measure processing speed")
+    parser.add_argument('--testsuite', metavar='dir',
+                        help="run regression tests from dir")
+    parser.add_argument('--doctest', action='store_true',
+                        help="run doctest on myself")
+
+    # handle positional arguments
+    parser.add_argument('paths', nargs='?')
+
+    arguments = parser.parse_args(arglist)
+    args = arguments.paths
+    if arguments.testsuite:
+        args.append(arguments.testsuite)
     if len(args) == 0:
         parser.error('input not specified')
-    options.prog = os.path.basename(sys.argv[0])
-    options.exclude = options.exclude.split(',')
-    for index in range(len(options.exclude)):
-        options.exclude[index] = options.exclude[index].rstrip('/')
-    if options.filename:
-        options.filename = options.filename.split(',')
-    if options.ignore:
-        options.ignore = options.ignore.split(',')
+    arguments.prog = os.path.basename(sys.argv[0])
+    arguments.exclude = arguments.exclude.split(',')
+    for index in range(len(arguments.exclude)):
+        arguments.exclude[index] = arguments.exclude[index].rstrip('/')
+    if arguments.filename:
+        arguments.filename = arguments.filename.split(',')
+    if arguments.ignore:
+        arguments.ignore = arguments.ignore.split(',')
     else:
-        options.ignore = []
-    options.counters = {}
-    options.messages = {}
+        arguments.ignore = []
+    arguments.counters = {}
+    arguments.messages = {}
 
-    return options, args
+    return arguments, args
 
 
 def _main():
     """
-    Parse options and run checks on Python source.
+    Parse arguments and run checks on Python source.
     """
-    options, args = process_options()
-    if options.doctest:
+    arguments, args = process_arguments()
+    if arguments.doctest:
         import doctest
         return doctest.testmod()
     start_time = time.time()
@@ -764,9 +773,9 @@ def _main():
         else:
             input_file(path)
     elapsed = time.time() - start_time
-    if options.statistics:
+    if arguments.statistics:
         print_statistics()
-    if options.benchmark:
+    if arguments.benchmark:
         print_benchmark(elapsed)
 
 
