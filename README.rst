@@ -121,10 +121,8 @@ We also have a set of functional tests, which can be run by issuing this command
 Functional tests can take a bit longer to complete, as they test cheesecake_index
 script as a whole (as opposed to testing modules and classes separately).
 
-If you happen to find any of our tests failing, please don't hesitate to contact
-us, either via
-`cheesecake-devel mailing list <http://lists2.idyll.org/listinfo/cheesecake-dev>`_
-or via `Cheesecake Trac <http://pycheesecake.org/>`_.
+If you happen to find any of our tests failing, please don't hesitate to open a
+ticket on GitHub.
 
 Mailing lists
 -------------
@@ -255,20 +253,3 @@ Sample output
     =============================================
     OVERALL CHEESECAKE INDEX (ABSOLUTE) .... 369
     OVERALL CHEESECAKE INDEX (RELATIVE) ....  62  (369 out of a maximum of 595 points is 62%)
-
-Case study: Cleaning up PyBlosxom
----------------------------------
-
-Many thanks to Will Guaraldi for writing
-`this article <http://pycheesecake.org/wiki/CleaningUpPyBlosxom>`_ about his
-experiences in using Cheesecake to clean up and improve the structure of his
-PyBlosxom package.
-    
-Future plans
-------------
-Cheesecake is under very active development. The immediate goal is to add the unit test 
-index measurement, followed by other metrics inspired from the 
-`kwalitee indicators <http://cpants.dev.zsi.at/kwalitee.html>`_. 
-Please edit the `IndexMeasurementIdeas <http://pycheesecake.org/wiki/IndexMeasurementIdeas>`_
-Wiki page to add things that you would like to see covered 
-by the Cheesecake metrics.
