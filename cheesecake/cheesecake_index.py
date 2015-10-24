@@ -1167,7 +1167,7 @@ class IndexPyLint(Index):
                                   filenames,
                                   self._pylint_args()),
                                  max_timeout=pylint_max_execution_time)
-            if rc:
+            if rc & 1 or rc >= 32:
                 if output == 'Time exceeded':
                     # Raise and exception what will cause PyLint to be removed
                     # from list of indices and thus won't affect the score.
