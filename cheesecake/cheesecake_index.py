@@ -1167,7 +1167,7 @@ class IndexPyLint(Index):
                                   filenames,
                                   self._pylint_args()),
                                  max_timeout=pylint_max_execution_time)
-            if rc:
+            if rc & 1 or rc >= 32:
                 if output == 'Time exceeded':
                     # Raise and exception what will cause PyLint to be removed
                     # from list of indices and thus won't affect the score.
@@ -1228,7 +1228,7 @@ class IndexPyLint(Index):
         try:
             import pylint.__pkginfo__
             from distutils.version import LooseVersion
-            if LooseVersion(pylint.__pkginfo__.version) > LooseVersion("0.21"):
+            if LooseVersion(pylint.__pkginfo__.version) < LooseVersion("0.21"):
                 disable_option = "disable-msg"
             else:
                 disable_option = "disable"
