@@ -17,7 +17,7 @@ setup(name='Cheesecake',
 
       # metadata for upload to PyPI
       author="Grig Gheorghiu and Michal Kwiatkowski",
-      author_email="grig@gheorghiu.net and ruby@joker.linuxstuff.pl",
+      author_email="grig@gheorghiu.net and michal@trivas.pl",
       description=('Computes "goodness" index for Python packages based on '
                    'various empirical "kwalitee" factors'),
       license="PSF",

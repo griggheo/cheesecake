@@ -149,8 +149,8 @@ Grig Gheorghiu
 
 Michal Kwiatkowski
 
-:Email: <ruby at joker.linuxstuff.pl>
-:Web site: http://joker.linuxstuff.pl
+:Email: <michal at trivas.pl>
+:Web site: http://trivas.pl
 
 Note: clipart for the cheesecake slice logo used with permission from
 Kazumi Hatasa, Director, the Japanese School at Middlebury College,

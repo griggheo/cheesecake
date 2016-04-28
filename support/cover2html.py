@@ -2,7 +2,7 @@
 #
 # Convert coverage output to HTML table.
 #
-# Copyright (c) 2006  Michal Kwiatkowski <ruby@joker.linuxstuff.pl>
+# Copyright (c) 2006  Michal Kwiatkowski <michal@trivas.pl>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
